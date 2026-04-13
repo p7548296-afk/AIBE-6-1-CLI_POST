@@ -24,7 +24,10 @@ public class App {
                 actionWrite();
             } else if (cmd.equals("list")) {
                 actionList();
+            } else if (cmd.startsWith("delete ")) {
+                actionDelete(cmd);
             }
+
         }
 
         scanner.close();
@@ -42,7 +45,7 @@ public class App {
         System.out.println("%d번 게시글이 등록되었습니다.".formatted(post.getId()));
     }
 
-    Post write (String title, String content) {
+    Post write(String title, String content) {
         Post post = new Post(++lastId, title, content);
         postList.add(post);
         return post;
@@ -52,10 +55,40 @@ public class App {
         System.out.println("번호 / 제목 / 내용");
         System.out.println("----------------------");
 
-        for (int i = postList.size()-1; i >= 0; i--) {
+        for (int i = postList.size() - 1; i >= 0; i--) {
             Post post = postList.get(i);
             System.out.println("%d / %s / %s".formatted(post.getId(), post.getTitle(), post.getContent()));
         }
     }
 
+    void actionDelete(String cmd) {
+        String[] cmdBits = cmd.split(" ");
+
+        if (cmdBits.length < 2 || cmdBits[1].isEmpty()) {
+            System.out.println("id를 입력해주세요.");
+            return;
+        }
+
+        int id = Integer.parseInt(cmdBits[1]);
+
+        delete(id);
+
+        System.out.println("%d번 게시글이 삭제되었습니다.".formatted(id));
+    }
+
+    private void delete(int id) {
+        Post post = null;
+        for (int i = 0; i < postList.size(); i++) {
+            if (postList.get(i).getId() == id) {
+                post = postList.get(i);
+            }
+        }
+
+        if (post == null) {
+            System.out.println("해당 아이디는 존재하지 않습니다.");
+            return;
+        }
+
+        postList.remove(post);
+    }
 }
