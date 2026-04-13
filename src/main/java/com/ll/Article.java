@@ -7,13 +7,13 @@ public class Article {
     private int id;
     private String title;
     private String content;
-    private String createDate;
+    private String regDate;
 
     Article(int id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     int getId() {
@@ -28,8 +28,8 @@ public class Article {
         return this.content;
     }
 
-    String getCreateDate() {
-        return this.createDate;
+    String getCurrentDate() {
+        return this.regDate;
     }
 
     void setId(int id) {

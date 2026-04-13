@@ -1,7 +1,5 @@
 package com.ll;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -62,7 +60,7 @@ public class App {
 
         for (int i = postList.size() - 1; i >= 0; i--) {
             Article post = postList.get(i);
-            System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCreateDate()));
+            System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCurrentDate()));
         }
     }
 
@@ -82,7 +80,7 @@ public class App {
         System.out.println("번호: " + post.getId());
         System.out.println("제목: " + post.getTitle());
         System.out.println("내용: " + post.getContent());
-        System.out.println("등록일: " + post.getCreateDate());
+        System.out.println("등록일: " + post.getCurrentDate());
     }
 
     void deleteArticle(String cmd) {
@@ -161,10 +159,6 @@ public class App {
         }
 
         return Integer.parseInt(cmdBits[1]);
-    }
-
-    String getCurrentDate() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
 }
