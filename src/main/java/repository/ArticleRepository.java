@@ -18,7 +18,7 @@ public class ArticleRepository {
 
     public List<Article> findAll() {
         List<Article> list = new ArrayList<>(articleMap.values());
-        list.sort((a1, a2) -> a2.id - a1.id);
+        list.sort((a1, a2) -> a2.getId() - a1.getId());
         return list;
     }
 
@@ -31,8 +31,8 @@ public class ArticleRepository {
     }
 
     public void update(Article article, String title, String content) {
-        article.title = title;
-        article.content = content;
-        article.modDate = LocalDateTime.now();
+        article.setTitle(title);
+        article.setContent(content);
+        article.setModDate(LocalDateTime.now());
     }
 }

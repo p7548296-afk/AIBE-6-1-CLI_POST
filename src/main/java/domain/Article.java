@@ -3,11 +3,11 @@ package domain;
 import java.time.LocalDateTime;
 
 public class Article {
-    public int id;
-    public String title;
-    public String content;
-    public LocalDateTime regDate;
-    public LocalDateTime modDate;
+    private int id;
+    private String title;
+    private String content;
+    private LocalDateTime regDate;
+    private LocalDateTime modDate;
 
     public Article(int id, String title, String content, LocalDateTime regDate, LocalDateTime modDate) {
         this.id = id;
@@ -17,4 +17,35 @@ public class Article {
         this.modDate = modDate;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public LocalDateTime getModDate() {
+        return modDate;
+    }
+
+    public void setModDate(LocalDateTime modDate) {
+        this.modDate = modDate;
+    }
+
+    public LocalDateTime getRegDate() {
+        return regDate;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

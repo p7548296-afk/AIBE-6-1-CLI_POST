@@ -60,11 +60,11 @@ public class App {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (Article article : articlesList) {
-            String regDate = article.regDate.format(formatter);
-            String modDate = article.modDate.format(formatter);
+            String regDate = article.getRegDate().format(formatter);
+            String modDate = article.getRegDate().format(formatter);
 
             System.out.printf("%-4d | %-10s | %s | %s\n",
-                    article.id, article.title, regDate, modDate);
+                    article.getId(), article.getTitle(), regDate, modDate);
         }
     }
 
@@ -76,8 +76,8 @@ public class App {
             System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
             return;
         }
-        System.out.printf("번호: %d\n제목: %s\n내용: %s\n등록일: %s\n",
-                article.id, article.title, article.content, article.regDate);
+        System.out.printf("번호: %d\n제목: %s\n내용: %s\n최초 등록일: %s\n최근 수정일: %s\n",
+                article.getId(), article.getTitle(), article.getContent(), article.getRegDate(), article.getModDate());
     }
 
     private void updateArticle(Rq rq) {
@@ -89,9 +89,9 @@ public class App {
             return;
         }
 
-        System.out.printf("제목(기존: %s): ", article.title);
+        System.out.printf("제목(기존: %s): ", article.getTitle());
         String title = sc.nextLine();
-        System.out.printf("내용(기존: %s): ", article.content);
+        System.out.printf("내용(기존: %s): ", article.getContent());
         String content = sc.nextLine();
 
         articles.update(article, title, content);
