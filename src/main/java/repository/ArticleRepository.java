@@ -5,7 +5,7 @@ import domain.Article;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class ArticleReposiorty {
+public class ArticleRepository {
     private final Map<Integer, Article> articleMap = new HashMap<>();
     private int lastId = 0;
 

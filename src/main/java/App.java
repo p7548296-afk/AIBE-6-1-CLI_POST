@@ -1,5 +1,5 @@
 import domain.Article;
-import repository.ArticleReposiorty;
+import repository.ArticleRepository;
 import util.Rq;
 
 import java.time.format.DateTimeFormatter;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    private final ArticleReposiorty articles = new ArticleReposiorty();
+    private final ArticleRepository articles = new ArticleRepository();
     private final Scanner sc = new Scanner(System.in);
 
     public void run() {
