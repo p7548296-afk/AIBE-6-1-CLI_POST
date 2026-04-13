@@ -10,6 +10,7 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
     int getId() {
         return this.id;
     }
@@ -21,4 +22,17 @@ public class Post {
     String getContent() {
         return this.content;
     }
+
+    void setId(int id) {
+        this.id = id;
+    }
+
+    void setTitle(String title) {
+        this.title = title;
+    }
+
+    void  setContent(String content) {
+        this.content = content;
+    }
+
 }

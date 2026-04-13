@@ -26,12 +26,15 @@ public class App {
                 actionList();
             } else if (cmd.startsWith("delete ")) {
                 actionDelete(cmd);
+            } else if (cmd.startsWith("update ")) {
+                actionUpdate(cmd);
             }
 
         }
 
         scanner.close();
     }
+
 
     void actionWrite() {
         System.out.print("제목: ");
@@ -62,33 +65,83 @@ public class App {
     }
 
     void actionDelete(String cmd) {
-        String[] cmdBits = cmd.split(" ");
+        int id = CmdSplitId(cmd);
 
-        if (cmdBits.length < 2 || cmdBits[1].isEmpty()) {
-            System.out.println("id를 입력해주세요.");
+        if (id < 0) {
             return;
         }
 
-        int id = Integer.parseInt(cmdBits[1]);
+        Post post = findById(id);
 
-        delete(id);
+        if (post == null) {
+            return;
+        }
+
+        delete(post);
 
         System.out.println("%d번 게시글이 삭제되었습니다.".formatted(id));
     }
 
-    private void delete(int id) {
+    private void delete(Post post) {
+        postList.remove(post);
+    }
+
+    private void actionUpdate(String cmd) {
+        int id = CmdSplitId(cmd);
+
+        if (id < 0) {
+            return;
+        }
+
+        Post post = findById(id);
+
+        if (post == null) {
+            return;
+        }
+
+        System.out.printf("제목(기존) : %s\n", post.getTitle());
+        System.out.print("제목 : ");
+        String title = scanner.nextLine().trim();
+
+        System.out.printf("내용(기존) : %s\n", post.getContent());
+        System.out.print("내용 : ");
+        String content = scanner.nextLine().trim();
+
+        modify(post, title, content);
+
+        System.out.println("%d번 게시글이 수정 되었습니다.".formatted(id));
+    }
+
+    void modify(Post post, String title, String content) {
+        post.setTitle(title);
+        post.setContent(content);
+    }
+
+    Post findById(int id) {
         Post post = null;
-        for (int i = 0; i < postList.size(); i++) {
-            if (postList.get(i).getId() == id) {
-                post = postList.get(i);
+        for (Post p : postList) {
+            if (p.getId() == id) {
+                post = p;
             }
         }
 
         if (post == null) {
             System.out.println("해당 아이디는 존재하지 않습니다.");
-            return;
+            return null;
         }
 
-        postList.remove(post);
+        return post;
     }
+
+    int CmdSplitId(String cmd) {
+        String[] cmdBits = cmd.split(" ");
+
+        if (cmdBits.length < 2 || cmdBits[1].isEmpty()) {
+            System.out.println("id를 입력해주세요.");
+            return -1;
+        }
+
+        return Integer.parseInt(cmdBits[1]);
+    }
+
 }
