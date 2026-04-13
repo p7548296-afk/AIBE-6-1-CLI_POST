@@ -32,22 +32,20 @@ public class App {
 
     void actionWrite() {
         System.out.print("제목: ");
-        String postTitle = scanner.nextLine().trim();
+        String title = scanner.nextLine().trim();
 
         System.out.print("내용: ");
-        String postContent = scanner.nextLine().trim();
+        String content = scanner.nextLine().trim();
 
-        int id = ++lastId;
+        Post post = write(title, content);
 
-        Post post = new Post();
+        System.out.println("%d번 게시글이 등록되었습니다.".formatted(post.getId()));
+    }
 
-        post.id = id;
-        post.title = postTitle;
-        post.content = postContent;
-
+    Post write (String title, String content) {
+        Post post = new Post(++lastId, title, content);
         postList.add(post);
-
-        System.out.println("%d번 게시글이 등록되었습니다.".formatted(id));
+        return post;
     }
 
     void actionList() {
@@ -56,7 +54,7 @@ public class App {
 
         for (int i = postList.size()-1; i >= 0; i--) {
             Post post = postList.get(i);
-            System.out.println("%d / %s / %s".formatted(post.id, post.title, post.content));
+            System.out.println("%d / %s / %s".formatted(post.getId(), post.getTitle(), post.getContent()));
         }
     }
 
