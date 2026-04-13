@@ -1,8 +1,12 @@
+
+
 import controller.ArticleController;
 import repository.ArticleRepository;
 import service.ArticleService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+
 
 public class Container {
     private static Scanner sc;
@@ -14,7 +18,7 @@ public class Container {
         sc = new Scanner(System.in);
         articleRepository = new ArticleRepository();
         articleService = new ArticleService(articleRepository);
-        articleController = new ArticleController(articleService,sc);
+        articleController = new ArticleController(articleService,sc,DATE_FORMATTER);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             scClose();
@@ -35,5 +39,7 @@ public class Container {
     public static ArticleController getArticleController() {
         return articleController;
     }
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 
 }
