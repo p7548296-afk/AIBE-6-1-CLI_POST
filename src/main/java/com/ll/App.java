@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class App {
     Scanner scanner = new Scanner(System.in);
     int lastId = 0;
-    List<Post> postList = new ArrayList<>();
+    List<Article> postList = new ArrayList<>();
 
     void run() {
         System.out.println("== 게시글 앱 ==");
@@ -45,13 +45,13 @@ public class App {
         System.out.print("내용: ");
         String content = scanner.nextLine().trim();
 
-        Post post = write(title, content);
+        Article post = write(title, content);
 
         System.out.println("=> 게시글이 등록되었습니다.");
     }
 
-    Post write(String title, String content) {
-        Post post = new Post(++lastId, title, content);
+    Article write(String title, String content) {
+        Article post = new Article(++lastId, title, content);
         postList.add(post);
         return post;
     }
@@ -61,7 +61,7 @@ public class App {
         System.out.println("-----------------------------");
 
         for (int i = postList.size() - 1; i >= 0; i--) {
-            Post post = postList.get(i);
+            Article post = postList.get(i);
             System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCreateDate()));
         }
     }
@@ -73,7 +73,7 @@ public class App {
             return;
         }
 
-        Post post = findById(id);
+        Article post = findById(id);
 
         if (post == null) {
             return;
@@ -92,7 +92,7 @@ public class App {
             return;
         }
 
-        Post post = findById(id);
+        Article post = findById(id);
 
         if (post == null) {
             return;
@@ -103,7 +103,7 @@ public class App {
         System.out.println("=> 게시글이 삭제되었습니다.");
     }
 
-    private void delete(Post post) {
+    private void delete(Article post) {
         postList.remove(post);
     }
 
@@ -114,7 +114,7 @@ public class App {
             return;
         }
 
-        Post post = findById(id);
+        Article post = findById(id);
 
         if (post == null) {
             return;
@@ -131,14 +131,14 @@ public class App {
         System.out.println("=> 게시글이 수정되었습니다.");
     }
 
-    void modify(Post post, String title, String content) {
+    void modify(Article post, String title, String content) {
         post.setTitle(title);
         post.setContent(content);
     }
 
-    Post findById(int id) {
-        Post post = null;
-        for (Post p : postList) {
+    Article findById(int id) {
+        Article post = null;
+        for (Article p : postList) {
             if (p.getId() == id) {
                 post = p;
             }

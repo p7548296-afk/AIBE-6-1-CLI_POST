@@ -3,13 +3,13 @@ package com.ll;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Post {
+public class Article {
     private int id;
     private String title;
     private String content;
     private String createDate;
 
-    Post (int id, String title, String content) {
+    Article(int id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
