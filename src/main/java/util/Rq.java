@@ -6,7 +6,7 @@ public class Rq {
 
     public Rq(String command) {
         String[] bits = command.split(" ");
-        this.actionPath = bits[0]; // "detail"
+        this.actionPath = bits[0];
 
         if (bits.length > 1) {
             try {

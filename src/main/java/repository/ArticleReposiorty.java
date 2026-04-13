@@ -1,9 +1,11 @@
-package domain;
+package repository;
+
+import domain.Article;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Articles {
+public class ArticleReposiorty {
     private final Map<Integer, Article> articleMap = new HashMap<>();
     private int lastId = 0;
 
