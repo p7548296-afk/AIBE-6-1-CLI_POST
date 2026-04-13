@@ -66,16 +66,41 @@ src
 
 ---
 
-## 🧠 메서드 설계 예시
+## 🧠 메서드 설계
 
+### 1. App / Container (실행 및 조립)
 | 메서드명 | 설명 |
 | :--- | :--- |
-| run() | 앱 실행 루프 (입력 대기 및 명령어 처리) |
-| writeArticle() | 게시글 작성 처리 |
-| listArticles() | 게시글 목록 출력 |
-| showDetail(int id) | 특정 글 상세 내용 출력 |
-| updateArticle(int id) | 게시글 수정 처리 |
-| deleteArticle(int id) | 게시글 삭제 처리 |
+| run() | 앱 실행 메인 루프. Rq를 통한 명령어 파싱 및 컨트롤러 라우팅 담당 |
+| init() | 프로그램 시작 시 필요한 객체(Controller, Service, Repo) 생성 및 의존성 주입(DI) |
+| scClose() | 프로그램 종료 시 Scanner 자원 해제 및 메모리 누수 방지 |
+
+### 2. ArticleController (사용자 인터페이스 - View)
+| 메서드명 | 설명 |
+| :--- | :--- |
+| doWrite() | 게시글 작성 UI. 제목/내용 입력받아 서비스에 전달 |
+| showList() | 전체 게시글 목록 출력. Container.DATE_FORMATTER를 통한 날짜 포매팅 적용 |
+| showDetail(Rq rq) | 특정 게시글 상세 UI. try-catch로 존재하지 않는 글 예외 처리 |
+| doModify(Rq rq) | 게시글 수정 UI. 기존 내용을 보여주고 새 내용을 입력받아 수정 요청 |
+| doDelete(Rq rq) | 게시글 삭제 처리 결과 출력 |
+| showHelp() | 사용 가능한 모든 명령어와 사용법 가이드 출력 |
+
+### 3. ArticleService (비즈니스 로직 - 핵심)
+| 메서드명 | 설명 |
+| :--- | :--- |
+| write(title, content) | 게시글 생성 로직 수행 및 생성된 게시글 번호(ID) 반환 |
+| getArticles() | 게시글 목록 반환 (비즈니스 규칙에 따른 데이터 가공) |
+| getArticle(id) | 단건 조회 및 검증. 글이 없을 경우 RuntimeException 발생 |
+| modify(id, title, content) | 조회된 게시글 객체의 상태 변경 (Dirty Checking 방식) |
+| remove(id) | 게시글 존재 여부 확인 후 삭제 로직 실행 |
+
+### 4. ArticleRepository (데이터 액세스 - Storage)
+| 메서드명 | 설명 |
+| :--- | :--- |
+| save(title, content) | Article 객체 생성 후 Map에 저장. 생성된 ID 리턴 |
+| findAll() | Map의 모든 Value를 List로 변환하여 반환 (최신순 정렬) |
+| findById(id) | Map에서 ID를 키값으로 객체 조회 |
+| delete(id) | Map에서 해당 ID의 데이터 완전 삭제 |
 --- 
 
 ## 💬 실행 예시
