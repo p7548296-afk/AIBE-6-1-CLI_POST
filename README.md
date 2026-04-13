@@ -46,10 +46,16 @@ src
     ├── main
     │   ├── java
     │   │   ├── App.java
+    │   │   ├── Container.java
     │   │   ├── Main.java
+    │   │   ├── controller
+    │   │   │   └── ArticleController.java
     │   │   ├── domain
-    │   │   │   ├── Article.java
-    │   │   │   └── Articles.java
+    │   │   │   └── Article.java
+    │   │   ├── repository
+    │   │   │   └── ArticleRepository.java
+    │   │   ├── service
+    │   │   │   └── ArticleService.java
     │   │   └── util
     │   │       └── Rq.java
     │   └── resources
