@@ -1,5 +1,7 @@
 package com.ll;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,22 +23,22 @@ public class App {
                 System.out.println("프로그램을 종료합니다.");
                 break;
             } else if (cmd.equals("write")) {
-                actionWrite();
+                writeArticle();
             } else if (cmd.equals("list")) {
-                actionList();
+                listArticles();
             } else if (cmd.startsWith("detail ")) {
-                actionDetail(cmd);
+                showDetail(cmd);
             } else if (cmd.startsWith("delete ")) {
-                actionDelete(cmd);
+                deleteArticle(cmd);
             } else if (cmd.startsWith("update ")) {
-                actionUpdate(cmd);
+                updateArticle(cmd);
             }
         }
         scanner.close();
     }
 
 
-    void actionWrite() {
+    void writeArticle() {
         System.out.print("제목: ");
         String title = scanner.nextLine().trim();
 
@@ -54,7 +56,7 @@ public class App {
         return post;
     }
 
-    void actionList() {
+    void listArticles() {
         System.out.println("번호 | 제목 | 등록일");
         System.out.println("-----------------------------");
 
@@ -64,7 +66,7 @@ public class App {
         }
     }
 
-    void actionDetail(String cmd) {
+    void showDetail(String cmd) {
         int id = CmdSplitId(cmd);
 
         if (id < 0) {
@@ -83,7 +85,7 @@ public class App {
         System.out.println("등록일: " + post.getCreateDate());
     }
 
-    void actionDelete(String cmd) {
+    void deleteArticle(String cmd) {
         int id = CmdSplitId(cmd);
 
         if (id < 0) {
@@ -105,7 +107,7 @@ public class App {
         postList.remove(post);
     }
 
-    private void actionUpdate(String cmd) {
+    private void updateArticle(String cmd) {
         int id = CmdSplitId(cmd);
 
         if (id < 0) {
@@ -159,6 +161,10 @@ public class App {
         }
 
         return Integer.parseInt(cmdBits[1]);
+    }
+
+    String getCurrentDate() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
 }
