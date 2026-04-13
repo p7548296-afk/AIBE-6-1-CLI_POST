@@ -24,14 +24,14 @@ public class App {
                 actionWrite();
             } else if (cmd.equals("list")) {
                 actionList();
+            } else if (cmd.startsWith("detail ")) {
+                actionDetail(cmd);
             } else if (cmd.startsWith("delete ")) {
                 actionDelete(cmd);
             } else if (cmd.startsWith("update ")) {
                 actionUpdate(cmd);
             }
-
         }
-
         scanner.close();
     }
 
@@ -45,7 +45,7 @@ public class App {
 
         Post post = write(title, content);
 
-        System.out.println("%d번 게시글이 등록되었습니다.".formatted(post.getId()));
+        System.out.println("=> 게시글이 등록되었습니다.");
     }
 
     Post write(String title, String content) {
@@ -55,13 +55,32 @@ public class App {
     }
 
     void actionList() {
-        System.out.println("번호 / 제목 / 내용");
-        System.out.println("----------------------");
+        System.out.println("번호 | 제목 | 등록일");
+        System.out.println("-----------------------------");
 
         for (int i = postList.size() - 1; i >= 0; i--) {
             Post post = postList.get(i);
-            System.out.println("%d / %s / %s".formatted(post.getId(), post.getTitle(), post.getContent()));
+            System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCreateDate()));
         }
+    }
+
+    void actionDetail(String cmd) {
+        int id = CmdSplitId(cmd);
+
+        if (id < 0) {
+            return;
+        }
+
+        Post post = findById(id);
+
+        if (post == null) {
+            return;
+        }
+
+        System.out.println("번호: " + post.getId());
+        System.out.println("제목: " + post.getTitle());
+        System.out.println("내용: " + post.getContent());
+        System.out.println("등록일: " + post.getCreateDate());
     }
 
     void actionDelete(String cmd) {
@@ -79,7 +98,7 @@ public class App {
 
         delete(post);
 
-        System.out.println("%d번 게시글이 삭제되었습니다.".formatted(id));
+        System.out.println("=> 게시글이 삭제되었습니다.");
     }
 
     private void delete(Post post) {
@@ -99,17 +118,15 @@ public class App {
             return;
         }
 
-        System.out.printf("제목(기존) : %s\n", post.getTitle());
-        System.out.print("제목 : ");
+        System.out.printf("제목 (현재: %s): ", post.getTitle());
         String title = scanner.nextLine().trim();
 
-        System.out.printf("내용(기존) : %s\n", post.getContent());
-        System.out.print("내용 : ");
+        System.out.printf("내용 (현재: %s): ", post.getContent());
         String content = scanner.nextLine().trim();
 
         modify(post, title, content);
 
-        System.out.println("%d번 게시글이 수정 되었습니다.".formatted(id));
+        System.out.println("=> 게시글이 수정되었습니다.");
     }
 
     void modify(Post post, String title, String content) {
