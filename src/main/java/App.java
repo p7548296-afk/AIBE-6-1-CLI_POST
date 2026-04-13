@@ -12,6 +12,7 @@ public class App {
 
     public void run() {
         System.out.println("== 자바 텍스트 게시판 시작 ==");
+        helpCommand();
 
         while (true) {
             System.out.print("명령어: ");
@@ -30,6 +31,7 @@ public class App {
                 case "detail" -> showDetail(rq);
                 case "update" -> updateArticle(rq);
                 case "delete" -> deleteArticle(rq);
+                case "help" -> helpCommand();
                 default -> System.out.println("존재하지 않는 명령어입니다.");
             }
         }
@@ -52,7 +54,6 @@ public class App {
             return;
         }
 
-        // 헤더에 '최근 수정일' 추가
         System.out.println("번호 | 제목       | 최초 등록일 | 최근 수정일");
         System.out.println("--------------------------------------------------");
 
@@ -68,7 +69,7 @@ public class App {
     }
 
     private void showDetail(Rq rq) {
-        int id = rq.getId(); // 여기서 Rq가 발라놓은 ID를 꺼냅니다!
+        int id = rq.getId();
         Article article = articles.findById(id);
 
         if (article == null) {
@@ -104,5 +105,16 @@ public class App {
         } else {
             System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
         }
+    }
+
+    private void helpCommand() {
+        System.out.println("명령어 모음");
+        System.out.println("등록 : write");
+        System.out.println("목록 : list");
+        System.out.println("상세 : detail {id}");
+        System.out.println("수정 : update {id}");
+        System.out.println("삭제 : delete {id}");
+        System.out.println("도움 : help");
+        System.out.println("종료: exit");
     }
 }
