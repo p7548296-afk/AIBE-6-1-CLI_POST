@@ -10,7 +10,6 @@ public class App {
         Scanner sc = Container.getScanner();
 
         System.out.println("== 자바 텍스트 게시판 시작 ==");
-        articleController.helpView();
 
         while (true) {
             System.out.print("명령어: ");
@@ -25,13 +24,13 @@ public class App {
                     Container.scClose();
                     return;
                 }
-                case "write" -> articleController.writeView();
-                case "list" -> articleController.listView();
-                case "detail" -> articleController.showDetailView(rq);
-                case "update" -> articleController.updateView(rq);
-                case "delete" -> articleController.deleteView(rq);
-                case "help" -> articleController.helpView();
-                default -> System.out.println("존재하지 않는 명령어입니다.");
+                case "write" -> articleController.doWrite();
+                case "list" -> articleController.showList();
+                case "detail" -> articleController.showDetail(rq);
+                case "update" -> articleController.doModify(rq);
+                case "delete" -> articleController.doDelete(rq);
+                case "help" -> articleController.showHelp();
+                default -> System.out.println("존재하지 않는 명령어입니다. 'help'를 입력해보세요.");
             }
         }
     }

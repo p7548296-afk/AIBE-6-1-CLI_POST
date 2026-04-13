@@ -1,7 +1,6 @@
 package repository;
 
 import domain.Article;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -9,7 +8,7 @@ public class ArticleRepository {
     private final Map<Integer, Article> articleMap = new HashMap<>();
     private int lastId = 0;
 
-    public int write(String title, String content) {
+    public int save(String title, String content) {
         int id = ++lastId;
         LocalDateTime now = LocalDateTime.now();
         articleMap.put(id, new Article(id, title, content, now, now));
@@ -26,13 +25,7 @@ public class ArticleRepository {
         return articleMap.get(id);
     }
 
-    public boolean deleteById(int id) {
-        return articleMap.remove(id) != null;
-    }
-
-    public void update(Article article, String title, String content) {
-        article.setTitle(title);
-        article.setContent(content);
-        article.setModDate(LocalDateTime.now());
+    public void delete(int id) {
+        articleMap.remove(id);
     }
 }
