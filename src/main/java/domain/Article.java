@@ -17,6 +17,12 @@ public class Article {
         this.modDate = modDate;
     }
 
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.modDate = LocalDateTime.now();
+    }
+
     public int getId() {
         return id;
     }

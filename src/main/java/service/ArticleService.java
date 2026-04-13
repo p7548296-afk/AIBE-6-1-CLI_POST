@@ -28,14 +28,12 @@ public class ArticleService {
     }
 
     public void modify(int id, String title, String content) {
-        Article article = getArticle(id); // 존재 여부 체크 포함
-        article.setTitle(title);
-        article.setContent(content);
-        article.setModDate(java.time.LocalDateTime.now());
+        Article article = getArticle(id);
+        article.update(title, content);
     }
 
     public void remove(int id) {
-        getArticle(id); // 존재 여부 체크 (없으면 예외 발생)
+        getArticle(id);
         articleRepository.delete(id);
     }
 }
