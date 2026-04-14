@@ -17,19 +17,25 @@ public class App {
             System.out.print("명령어) ");
             String cmd = scanner.nextLine().trim();
 
-            if (cmd.equals("exit")) {
+            Rq rq = new Rq(cmd);
+            String actionName = rq.getActionName();
+
+            if (actionName.equals("exit")) {
                 System.out.println("프로그램을 종료합니다.");
                 break;
-            } else if (cmd.equals("write")) {
+            } else if (actionName.equals("write")) {
                 writeArticle();
-            } else if (cmd.equals("list")) {
+            } else if (actionName.equals("list")) {
                 listArticles();
-            } else if (cmd.startsWith("detail ")) {
-                showDetail(cmd);
-            } else if (cmd.startsWith("delete ")) {
-                deleteArticle(cmd);
-            } else if (cmd.startsWith("update ")) {
-                updateArticle(cmd);
+            } else if (actionName.equals("detail")) {
+                int id = rq.getParamAsInt("id", -1);
+                showDetail(id);
+            } else if (actionName.equals("delete")) {
+                int id = rq.getParamAsInt("id", -1);
+                deleteArticle(id);
+            } else if (actionName.equals("update")) {
+                int id = rq.getParamAsInt("id", -1);
+                updateArticle(id);
             }
         }
         scanner.close();
@@ -64,10 +70,9 @@ public class App {
         }
     }
 
-    void showDetail(String cmd) {
-        int id = CmdSplitId(cmd);
-
+    void showDetail(int id) {
         if (id < 0) {
+            System.out.println("id를 입력해주세요.");
             return;
         }
 
@@ -83,10 +88,9 @@ public class App {
         System.out.println("등록일: " + post.getCurrentDate());
     }
 
-    void deleteArticle(String cmd) {
-        int id = CmdSplitId(cmd);
-
+    void deleteArticle(int id) {
         if (id < 0) {
+            System.out.println("id를 입력해주세요.");
             return;
         }
 
@@ -105,10 +109,9 @@ public class App {
         postList.remove(post);
     }
 
-    private void updateArticle(String cmd) {
-        int id = CmdSplitId(cmd);
-
+    private void updateArticle(int id) {
         if (id < 0) {
+            System.out.println("id를 입력해주세요.");
             return;
         }
 
@@ -134,6 +137,7 @@ public class App {
         post.setContent(content);
     }
 
+
     Article findById(int id) {
         Article post = null;
         for (Article p : postList) {
@@ -150,15 +154,5 @@ public class App {
         return post;
     }
 
-    int CmdSplitId(String cmd) {
-        String[] cmdBits = cmd.split(" ");
-
-        if (cmdBits.length < 2 || cmdBits[1].isEmpty()) {
-            System.out.println("id를 입력해주세요.");
-            return -1;
-        }
-
-        return Integer.parseInt(cmdBits[1]);
-    }
 
 }
