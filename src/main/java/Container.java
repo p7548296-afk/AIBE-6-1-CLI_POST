@@ -14,8 +14,8 @@ public class Container {
     private static ArticleService articleService;
     private static ArticleController articleController;
 
-    public static void init() {
-        sc = new Scanner(System.in);
+    public static void init(Scanner scanner) {
+        sc = scanner;
         articleRepository = new ArticleRepository();
         articleService = new ArticleService(articleRepository);
         articleController = new ArticleController(articleService,sc,DATE_FORMATTER);
@@ -30,10 +30,6 @@ public class Container {
         if (sc != null) {
             sc.close();
         }
-    }
-
-    public static Scanner getScanner(){
-        return sc;
     }
 
     public static ArticleController getArticleController() {

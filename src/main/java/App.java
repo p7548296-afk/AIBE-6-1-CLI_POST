@@ -12,7 +12,7 @@ public class App {
     }
 
     public void run() {
-        Container.init();
+        Container.init(this.sc);
         ArticleController articleController = Container.getArticleController();
 
         System.out.println("== 자바 텍스트 게시판 시작 ==");
