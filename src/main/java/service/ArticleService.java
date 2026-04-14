@@ -20,11 +20,8 @@ public class ArticleService {
     }
 
     public Article getArticle(int id) {
-        Article article = articleRepository.findById(id);
-        if (article == null) {
-            throw new RuntimeException(id + "번 게시글은 존재하지 않습니다.");
-        }
-        return article;
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(id + "번 게시글은 존재하지 않습니다."));
     }
 
     public void modify(int id, String title, String content) {

@@ -21,8 +21,8 @@ public class ArticleRepository {
         return list;
     }
 
-    public Article findById(int id) {
-        return articleMap.get(id);
+    public Optional<Article> findById(int id) {
+        return Optional.ofNullable(articleMap.get(id));
     }
 
     public void delete(int id) {
