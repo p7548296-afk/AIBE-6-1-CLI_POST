@@ -3,44 +3,55 @@ package com.ll;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 게시글 데이터 클래스
+ * 게시글의 아이디, 제목, 내용, 등록일을 관리합니다.
+ */
 public class Article {
-    private int id;
-    private String title;
-    private String content;
-    private String regDate;
+    private int id;              // 게시글 번호
+    private String title;        // 게시글 제목
+    private String content;      // 게시글 내용
+    private String regDate;      // 게시글 등록일 (yyyy-MM-dd 형식)
 
-    Article(int id, String title, String content) {
+    /**
+     * Article 생성자
+     * @param id 게시글 번호
+     * @param title 게시글 제목
+     * @param content 게시글 내용
+     */
+    public Article(int id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
+        // 현재 날짜를 yyyy-MM-dd 형식으로 저장
         this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
-    int getId() {
+    public int getId() {
         return this.id;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return this.title;
     }
 
-    String getContent() {
+    public String getContent() {
         return this.content;
     }
 
-    String getCurrentDate() {
+    public String getCurrentDate() {
         return this.regDate;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    void  setContent(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
