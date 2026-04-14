@@ -46,7 +46,7 @@ public class ArticleController {
             Article article = articleService.getArticle(rq.getId());
             String regDate = article.getRegDate().format(DATE_FORMATTER);
             String modDate = article.getModDate().format(DATE_FORMATTER);
-            System.out.printf("번호: %d\n제목: %s\n내용: %s\n등록일: %s\\n 수정일: %s\\n",
+            System.out.printf("번호: %d\n제목: %s\n내용: %s\n등록일: %s\n수정일: %s\n",
                     article.getId(), article.getTitle(), article.getContent(),regDate,modDate);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
