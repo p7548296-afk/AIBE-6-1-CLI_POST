@@ -4,10 +4,16 @@ import util.Rq;
 import java.util.Scanner;
 
 public class App {
+
+    private final Scanner sc;
+
+    public App(Scanner sc) { // 외부에서 주입받도록 변경
+        this.sc = sc;
+    }
+
     public void run() {
         Container.init();
         ArticleController articleController = Container.getArticleController();
-        Scanner sc = Container.getScanner();
 
         System.out.println("== 자바 텍스트 게시판 시작 ==");
 
