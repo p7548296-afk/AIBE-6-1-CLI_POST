@@ -140,12 +140,54 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("getTotalPage - 전체 페이지 수가 올바르게 계산되어야 한다")
-    void getTotalPage_test() {
+    @DisplayName("getSearchArticles: 제목 검색이 정확하게 필터링되어야 한다")
+    void search_title_test() {
         // given
-        for (int i = 1; i <= 11; i++) articleService.write("제목", "내용");
+        articleService.write("자바 공부", "내용1");
+        articleService.write("파이썬 기초", "내용2");
+        articleService.write("자바 정복", "내용3");
 
-        // when & then
-        assertThat(articleService.getTotalPage(5)).isEqualTo(3);
+        Pageable pageable = new Pageable(1, 10);
+
+        // when
+        Page<Article> result = articleService.getSearchArticles(pageable, "title", "자바");
+
+        // then
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent().get(0).getTitle()).contains("자바");
+        assertThat(result.getTotalPages()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("getSearchArticles: 내용 검색이 정확하게 필터링되어야 한다")
+    void search_content_test() {
+        // given
+        articleService.write("제목1", "스프링 핵심 원리");
+        articleService.write("제목2", "JPA 프로그래밍");
+
+        Pageable pageable = new Pageable(1, 10);
+
+        // when
+        Page<Article> result = articleService.getSearchArticles(pageable, "content", "스프링");
+
+        // then
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getContent()).contains("스프링");
+    }
+
+    @Test
+    @DisplayName("getSearchArticles: 검색 결과가 없을 때 빈 페이지를 반환해야 한다")
+    void search_fail_test() {
+        // given
+        articleService.write("제목", "내용");
+        Pageable pageable = new Pageable(1, 10);
+
+        // when
+        Page<Article> result = articleService.getSearchArticles(pageable, "all", "없는키워드");
+
+        // then
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalPages()).isEqualTo(1);
+    }
+
 }

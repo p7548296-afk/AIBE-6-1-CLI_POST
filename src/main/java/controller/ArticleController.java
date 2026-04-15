@@ -86,6 +86,34 @@ public class ArticleController {
         }
     }
 
+    public void doSearch(Rq rq) {
+        String target = rq.getParam("target", "all"); // 기본값은 전체 검색
+        String keyword = rq.getParam("keyword", "");
+        Pageable pageable = rq.getPageable(5);
+
+        if (keyword.isEmpty()) {
+            System.out.println("검색어를 입력해주세요. (예: search?target=title&keyword=자바)");
+            return;
+        }
+
+        Page<Article> searchPage = articleService.getSearchArticles(pageable, target, keyword);
+
+        if (searchPage.getContent().isEmpty()) {
+            System.out.printf("'%s'에 대한 검색 결과가 없습니다.\n", keyword);
+            return;
+        }
+
+        System.out.printf("--- [%s] 검색 결과 (키워드: %s) ---\n", target, keyword);
+        System.out.println("번호 | 제목 | 조회수 | 등록일");
+        searchPage.getContent().forEach(a ->
+                System.out.printf("%d | %s | %d | %s\n",
+                        a.getId(), a.getTitle(), a.getCount(), a.getRegDate().format(DATE_FORMATTER)));
+
+        System.out.printf("--- 현재 페이지: %d / %d ---\n",
+                searchPage.getCurrentPage(), searchPage.getTotalPages());
+    }
+
+
     public void showHelp() {
         System.out.println("\n=== 명령어 도움말 ===");
         System.out.println("등록 : write");
@@ -93,6 +121,8 @@ public class ArticleController {
         System.out.println("상세 : detail?id=1");
         System.out.println("수정 : update?id=1");
         System.out.println("삭제 : delete?id=1");
+        System.out.println("검색 : search?target=title&keyword=자바&page=1");
+        System.out.println("  - target : title(제목), content(내용), all(전체)");
         System.out.println("도움 : help");
         System.out.println("종료 : exit");
         System.out.println("====================\n");

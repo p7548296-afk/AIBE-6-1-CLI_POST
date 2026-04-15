@@ -16,6 +16,7 @@ public class App {
         ArticleController articleController = Container.getArticleController();
 
         System.out.println("== 자바 텍스트 게시판 시작 ==");
+        articleController.showHelp();
 
         while (true) {
             System.out.print("명령어: ");
@@ -35,6 +36,7 @@ public class App {
                 case "detail" -> articleController.showDetail(rq);
                 case "update" -> articleController.doModify(rq);
                 case "delete" -> articleController.doDelete(rq);
+                case "search" -> articleController.doSearch(rq);
                 case "help" -> articleController.showHelp();
                 default -> System.out.println("존재하지 않는 명령어입니다. 'help'를 입력해보세요.");
             }

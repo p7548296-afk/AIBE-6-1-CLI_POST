@@ -145,4 +145,49 @@ class ArticleControllerTest {
         String out = output.toString();
         assertThat(out).contains("99번 게시글은 존재하지 않습니다.");
     }
+
+    @Test
+    @DisplayName("doSearch: 제목 검색 성공 시 결과 목록을 출력한다")
+    void t8() {
+        // given
+        service.write("공지사항입니다", "내용");
+        service.write("오늘의 일기", "내용");
+        ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
+
+        // when
+        controller.doSearch(new Rq("search?target=title&keyword=공지"));
+
+        // then
+        String out = output.toString();
+        assertThat(out).contains("[title] 검색 결과");
+        assertThat(out).contains("공지사항입니다");
+        assertThat(out).doesNotContain("오늘의 일기");
+    }
+
+    @Test
+    @DisplayName("doSearch: 검색 결과가 없을 때 안내 메시지를 출력한다")
+    void t9() {
+        // given
+        ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
+
+        // when
+        controller.doSearch(new Rq("search?target=all&keyword=갤럭시"));
+
+        // then
+        assertThat(output.toString()).contains("'갤럭시'에 대한 검색 결과가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("doSearch: 키워드 없이 검색 시 경고 메시지를 출력한다")
+    void t10() {
+        // given
+        ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
+
+        // when
+        controller.doSearch(new Rq("search?target=title&keyword="));
+
+        // then
+        assertThat(output.toString()).contains("검색어를 입력해주세요.");
+    }
+
 }
