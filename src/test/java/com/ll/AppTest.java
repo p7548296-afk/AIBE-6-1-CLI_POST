@@ -47,14 +47,15 @@ class AppTest {
         }
     }
 
-
+    // -------------------------------------------------------------------------------------
     // 1. 게시글 작성 (writeArticle)테스트 케이스
+    // -------------------------------------------------------------------------------------
     @Nested
-    @DisplayName("게시글 작성(writeArticle) BLUE 케이스")
-    class WriteArticleBlueTest {
+    @DisplayName("게시글 작성(writeArticle) 테스트")
+    class WriteArticleTest {
 
         @Test
-        @DisplayName("제목/내용이 올바르면 게시글이 생성된다")
+        @DisplayName("제목과 내용이 올바르게 입력되었을 때 게시글이 성공적으로 생성되는지 확인")
         void createsArticleWhenInputIsValid() {
             Article article = app.write("자바 공부", "자바 텍스트 게시판 만들기");
 
@@ -66,7 +67,7 @@ class AppTest {
         }
 
         @Test
-        @DisplayName("제목 또는 내용이 비어 있으면 예외가 발생한다")
+        @DisplayName("제목 또는 내용이 비어있을 때 예외가 발생하는지 확인")
         void throwsExceptionWhenTitleOrContentIsEmpty() {
             assertThrows(IllegalArgumentException.class, () -> app.write("", "정상 내용"));
             assertThrows(IllegalArgumentException.class, () -> app.write("정상 제목", ""));
@@ -75,7 +76,7 @@ class AppTest {
         }
 
         @Test
-        @DisplayName("게시글 ID는 자동으로 1씩 증가한다")
+        @DisplayName("게시글 ID가 자동으로 증가하는지 확인")
         void incrementsIdAutomatically() {
             Article article1 = app.write("제목1", "내용1");
             Article article2 = app.write("제목2", "내용2");
@@ -87,54 +88,36 @@ class AppTest {
         }
     }
 
+
+    // -------------------------------------------------------------------------------------
     // 2. 게시글 목록 출력 (listArticles) 테스트 케이스
+    // -------------------------------------------------------------------------------------
     @Nested
     @DisplayName("게시글 목록 출력(listArticles) 테스트")
     class ListArticlesTest {
 
         @Test
-        @DisplayName("게시글이 없을 때 빈 목록이 출력된다")
+        @DisplayName("게시글이 없을 때 빈 목록이 출력되는지 확인")
         void showsEmptyMessageWhenNoArticles() {
-            String output = runAppWithInput(
-                    "list",
-                    "exit"
-            );
+            String output = runAppWithInput("list", "exit");
 
             assertTrue(output.contains("번호 | 제목 | 등록일"));
             assertTrue(output.contains("(게시글 없음)"));
         }
 
         @Test
-        @DisplayName("여러 게시글이 등록되면 목록이 올바르게 출력된다")
+        @DisplayName("여러 게시글이 등록되었을 때, 목록이 올바르게 출력되는지 확인")
         void showsAllArticlesInList() {
-            String output = runAppWithInput(
-                    "write",
-                    "첫번째 제목",
-                    "첫번째 내용",
-                    "write",
-                    "두번째 제목",
-                    "두번째 내용",
-                    "list",
-                    "exit"
-            );
+            String output = runAppWithInput("write", "첫번째 제목", "첫번째 내용", "write", "두번째 제목", "두번째 내용", "list", "exit");
 
             assertTrue(output.contains("1    | 첫번째 제목"));
             assertTrue(output.contains("2    | 두번째 제목"));
         }
 
         @Test
-        @DisplayName("최신 게시글이 목록 상단에 위치한다")
+        @DisplayName("최신 게시글이 목록의 상단에 위치하는지 확인")
         void latestArticleAppearsFirst() {
-            String output = runAppWithInput(
-                    "write",
-                    "첫번째 제목",
-                    "첫번째 내용",
-                    "write",
-                    "두번째 제목",
-                    "두번째 내용",
-                    "list",
-                    "exit"
-            );
+            String output = runAppWithInput("write", "첫번째 제목", "첫번째 내용", "write", "두번째 제목", "두번째 내용", "list", "exit");
 
             int secondIndex = output.indexOf("2    | 두번째 제목");
             int firstIndex = output.indexOf("1    | 첫번째 제목");
@@ -142,6 +125,35 @@ class AppTest {
             assertTrue(secondIndex >= 0);
             assertTrue(firstIndex >= 0);
             assertTrue(secondIndex < firstIndex);
+        }
+    }
+
+
+    // -------------------------------------------------------------------------------------
+    // 3. 게시글 상세보기 (showDetail) 테스트 케이스
+    // -------------------------------------------------------------------------------------
+    @Nested
+    @DisplayName("게시글 상세보기(showDetail) 테스트 케이스")
+    class ShowDetailTest {
+
+        @Test
+        @DisplayName("존재하지 않는 ID로 상세보기를 요청할 때 예외가 발생하는지 확인")
+        void showsErrorMessageWhenIdDoesNotExist() {
+            String output = runAppWithInput("detail 999", "exit");
+
+            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
+            assertTrue(!output.contains("번호: 999"));
+        }
+
+        @Test
+        @DisplayName("올바른 ID로 요청 시 게시글 내용이 정확하게 출력되는지 확인")
+        void showsDetailWhenIdIsValid() {
+            String output = runAppWithInput("write", "자바 공부", "자바 텍스트 게시판 만들기", "detail 1", "exit");
+
+            assertTrue(output.contains("번호: 1"));
+            assertTrue(output.contains("제목: 자바 공부"));
+            assertTrue(output.contains("내용: 자바 텍스트 게시판 만들기"));
+            assertTrue(output.contains("등록일:"));
         }
     }
 }
