@@ -3,7 +3,7 @@ package com.ll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Rq 테스트")
 class RqTest {
@@ -13,7 +13,7 @@ class RqTest {
     void parsesActionName() {
         Rq rq = new Rq("detail 1");
 
-        assertEquals("detail", rq.getActionName());
+        assertThat(rq.getActionName()).isEqualTo("detail");
     }
 
     @Test
@@ -21,7 +21,7 @@ class RqTest {
     void parsesIdParamAsInt() {
         Rq rq = new Rq("delete 3");
 
-        assertEquals(3, rq.getParamAsInt("id", -1));
+        assertThat(rq.getParamAsInt("id", -1)).isEqualTo(3);
     }
 
     @Test
@@ -30,8 +30,8 @@ class RqTest {
         Rq missingIdRq = new Rq("list");
         Rq invalidIdRq = new Rq("detail abc");
 
-        assertEquals(-1, missingIdRq.getParamAsInt("id", -1));
-        assertEquals(-1, invalidIdRq.getParamAsInt("id", -1));
+        assertThat(missingIdRq.getParamAsInt("id", -1)).isEqualTo(-1);
+        assertThat(invalidIdRq.getParamAsInt("id", -1)).isEqualTo(-1);
     }
 
     @Test
@@ -39,7 +39,7 @@ class RqTest {
     void getsArg() {
         Rq rq = new Rq("search 자바");
 
-        assertEquals("자바", rq.getArg());
+        assertThat(rq.getArg()).isEqualTo("자바");
     }
 }
 

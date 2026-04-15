@@ -11,8 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("App 테스트")
 class AppTest {
@@ -67,7 +66,7 @@ class AppTest {
     // output에 expectedTexts가 모두 포함되는지 한 번에 검증하는 헬퍼
     private void assertContainsAll(String output, String... expectedTexts) {
         for (String expected : expectedTexts) {
-            assertTrue(output.contains(expected));
+            assertThat(output).contains(expected);
         }
     }
 
@@ -91,8 +90,8 @@ class AppTest {
         void showsEmptyMessageWhenNoArticles() {
             String output = runAppWithInput("list", "exit");
 
-            assertTrue(output.contains("번호 | 제목 | 등록일 | 조회수"));
-            assertTrue(output.contains("(게시글 없음)"));
+            assertThat(output).contains("번호 | 제목 | 등록일 | 조회수");
+            assertThat(output).contains("(게시글 없음)");
         }
 
         @Test
@@ -111,9 +110,9 @@ class AppTest {
             int secondIndex = output.indexOf("2    | 두번째 제목");
             int firstIndex = output.indexOf("1    | 첫번째 제목");
 
-            assertTrue(secondIndex >= 0);
-            assertTrue(firstIndex >= 0);
-            assertTrue(secondIndex < firstIndex);
+            assertThat(secondIndex).isGreaterThanOrEqualTo(0);
+            assertThat(firstIndex).isGreaterThanOrEqualTo(0);
+            assertThat(secondIndex).isLessThan(firstIndex);
         }
 
         @Test
@@ -168,8 +167,8 @@ class AppTest {
         void showsErrorMessageWhenIdDoesNotExist() {
             String output = runAppWithInput("detail 999", "exit");
 
-            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertFalse(output.contains("번호: 999"));
+            assertThat(output).contains("해당 아이디는 존재하지 않습니다.");
+            assertThat(output).doesNotContain("번호: 999");
         }
 
         @Test
@@ -208,8 +207,8 @@ class AppTest {
         void showsErrorMessageWhenUpdateIdDoesNotExist() {
             String output = runAppWithInput("update 999", "exit");
 
-            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertFalse(output.contains("=> 게시글이 수정되었습니다."));
+            assertThat(output).contains("해당 아이디는 존재하지 않습니다.");
+            assertThat(output).doesNotContain("=> 게시글이 수정되었습니다.");
         }
 
         @Test
@@ -266,8 +265,8 @@ class AppTest {
         void showsErrorMessageWhenDeleteIdDoesNotExist() {
             String output = runAppWithInput("delete 999", "exit");
 
-            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertFalse(output.contains("=> 게시글이 삭제되었습니다."));
+            assertThat(output).contains("해당 아이디는 존재하지 않습니다.");
+            assertThat(output).doesNotContain("=> 게시글이 삭제되었습니다.");
         }
 
         @Test
@@ -276,7 +275,7 @@ class AppTest {
             String output = runWithTwoArticlesThen("delete 1", "list");
 
             assertContainsAll(output, "=> 게시글이 삭제되었습니다.", "2    | 두번째 제목");
-            assertFalse(output.contains("1    | 첫번째 제목"));
+            assertThat(output).doesNotContain("1    | 첫번째 제목");
         }
     }
 
@@ -315,7 +314,7 @@ class AppTest {
         void showsEmptyMessageWhenNoSearchResult() {
             String output = runWithTwoArticlesThen("search 파이썬");
 
-            assertTrue(output.contains("(검색 결과 없음)"));
+            assertThat(output).contains("(검색 결과 없음)");
         }
     }
 

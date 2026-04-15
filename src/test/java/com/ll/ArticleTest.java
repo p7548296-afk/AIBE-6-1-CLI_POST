@@ -6,11 +6,8 @@ import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("Article 테스트")
 class ArticleTest {
@@ -20,12 +17,12 @@ class ArticleTest {
     void createsArticleWhenInputIsValid() {
         Article article = new Article(1, "자바 공부", "자바 텍스트 게시판 만들기");
 
-        assertNotNull(article);
-        assertEquals(1, article.getId());
-        assertEquals("자바 공부", article.getTitle());
-        assertEquals("자바 텍스트 게시판 만들기", article.getContent());
-        assertNotNull(article.getCurrentDate());
-        assertEquals(0, article.getCount());
+        assertThat(article).isNotNull();
+        assertThat(article.getId()).isEqualTo(1);
+        assertThat(article.getTitle()).isEqualTo("자바 공부");
+        assertThat(article.getContent()).isEqualTo("자바 텍스트 게시판 만들기");
+        assertThat(article.getCurrentDate()).isNotNull();
+        assertThat(article.getCount()).isEqualTo(0);
     }
 
     @Test
@@ -35,9 +32,9 @@ class ArticleTest {
         String dateText = article.getCurrentDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        assertNotNull(dateText);
-        assertTrue(dateText.matches("\\d{4}-\\d{2}-\\d{2}"));
-        assertDoesNotThrow(() -> LocalDate.parse(dateText, formatter));
+        assertThat(dateText).isNotNull();
+        assertThat(dateText).matches("\\d{4}-\\d{2}-\\d{2}");
+        assertThatCode(() -> LocalDate.parse(dateText, formatter)).doesNotThrowAnyException();
     }
 
     @Test
@@ -48,8 +45,8 @@ class ArticleTest {
         article.setTitle("수정 제목");
         article.setContent("수정 내용");
 
-        assertEquals("수정 제목", article.getTitle());
-        assertEquals("수정 내용", article.getContent());
+        assertThat(article.getTitle()).isEqualTo("수정 제목");
+        assertThat(article.getContent()).isEqualTo("수정 내용");
     }
 
     @Test
@@ -60,7 +57,7 @@ class ArticleTest {
         article.increaseCount();
         article.increaseCount();
 
-        assertEquals(2, article.getCount());
+        assertThat(article.getCount()).isEqualTo(2);
     }
 
     @Test
@@ -68,8 +65,8 @@ class ArticleTest {
     void matchesByTitle() {
         Article article = new Article(1, "자바 공부", "스프링 실습");
 
-        assertTrue(article.matches("자바"));
-        assertFalse(article.matches("파이썬"));
+        assertThat(article.matches("자바")).isTrue();
+        assertThat(article.matches("파이썬")).isFalse();
     }
 
     @Test
@@ -77,8 +74,8 @@ class ArticleTest {
     void matchesByContent() {
         Article article = new Article(1, "공부 일지", "자바 텍스트 게시판 만들기");
 
-        assertTrue(article.matches("텍스트"));
-        assertFalse(article.matches("Django"));
+        assertThat(article.matches("텍스트")).isTrue();
+        assertThat(article.matches("Django")).isFalse();
     }
 }
 

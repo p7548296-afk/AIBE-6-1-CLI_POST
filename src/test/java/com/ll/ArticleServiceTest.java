@@ -7,12 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("ArticleService 테스트")
 class ArticleServiceTest {
@@ -34,20 +30,22 @@ class ArticleServiceTest {
             Article first = service.write("제목1", "내용1");
             Article second = service.write("제목2", "내용2");
 
-            assertEquals(1, first.getId());
-            assertEquals(2, second.getId());
+            assertThat(first.getId()).isEqualTo(1);
+            assertThat(second.getId()).isEqualTo(2);
         }
 
         @Test
         @DisplayName("제목이 빈 문자열이면 예외가 발생하는지 확인")
         void throwsWhenTitleIsEmpty() {
-            assertThrows(IllegalArgumentException.class, () -> service.write("", "내용"));
+            assertThatThrownBy(() -> service.write("", "내용"))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         @DisplayName("내용이 빈 문자열이면 예외가 발생하는지 확인")
         void throwsWhenContentIsEmpty() {
-            assertThrows(IllegalArgumentException.class, () -> service.write("제목", ""));
+            assertThatThrownBy(() -> service.write("제목", ""))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 
@@ -62,14 +60,14 @@ class ArticleServiceTest {
 
             Article found = service.findById(1);
 
-            assertNotNull(found);
-            assertEquals("자바 공부", found.getTitle());
+            assertThat(found).isNotNull();
+            assertThat(found.getTitle()).isEqualTo("자바 공부");
         }
 
         @Test
         @DisplayName("존재하지 않는 id로 조회하면 null을 반환하는지 확인")
         void returnsNullWhenIdDoesNotExist() {
-            assertNull(service.findById(999));
+            assertThat(service.findById(999)).isNull();
         }
     }
 
@@ -83,8 +81,8 @@ class ArticleServiceTest {
             Article post = service.write("삭제할 글", "내용");
             boolean deleted = service.deleteById(post.getId());
 
-            assertTrue(deleted);
-            assertTrue(service.findAll().isEmpty());
+            assertThat(deleted).isTrue();
+            assertThat(service.findAll()).isEmpty();
         }
 
         @Test
@@ -92,7 +90,7 @@ class ArticleServiceTest {
         void returnsFalseWhenDeleteIdDoesNotExist() {
             boolean deleted = service.deleteById(999);
 
-            assertFalse(deleted);
+            assertThat(deleted).isFalse();
         }
     }
 
@@ -106,9 +104,9 @@ class ArticleServiceTest {
             Article post = service.write("원래 제목", "원래 내용");
             boolean modified = service.modifyById(post.getId(), "수정 제목", "수정 내용");
 
-            assertTrue(modified);
-            assertEquals("수정 제목", post.getTitle());
-            assertEquals("수정 내용", post.getContent());
+            assertThat(modified).isTrue();
+            assertThat(post.getTitle()).isEqualTo("수정 제목");
+            assertThat(post.getContent()).isEqualTo("수정 내용");
         }
 
         @Test
@@ -116,7 +114,7 @@ class ArticleServiceTest {
         void returnsFalseWhenModifyIdDoesNotExist() {
             boolean modified = service.modifyById(999, "수정 제목", "수정 내용");
 
-            assertFalse(modified);
+            assertThat(modified).isFalse();
         }
     }
 
@@ -127,8 +125,8 @@ class ArticleServiceTest {
 
         List<Article> posts = service.findAll();
 
-        assertThrows(UnsupportedOperationException.class,
-                () -> posts.add(new Article(999, "외부 추가", "내용")));
+        assertThatThrownBy(() -> posts.add(new Article(999, "외부 추가", "내용")))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Nested
@@ -143,8 +141,8 @@ class ArticleServiceTest {
 
             List<Article> result = service.search("자바");
 
-            assertEquals(1, result.size());
-            assertEquals("자바 공부", result.get(0).getTitle());
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0).getTitle()).isEqualTo("자바 공부");
         }
 
         @Test
@@ -155,8 +153,8 @@ class ArticleServiceTest {
 
             List<Article> result = service.search("자바");
 
-            assertEquals(1, result.size());
-            assertEquals("공부 일지", result.get(0).getTitle());
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0).getTitle()).isEqualTo("공부 일지");
         }
 
         @Test
@@ -166,7 +164,7 @@ class ArticleServiceTest {
 
             List<Article> result = service.search("파이썬");
 
-            assertTrue(result.isEmpty());
+            assertThat(result).isEmpty();
         }
     }
 }
