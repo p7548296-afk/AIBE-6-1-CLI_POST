@@ -104,6 +104,8 @@ Windows PowerShell:
 .\gradlew.bat test
 ```
 
+- 단정문은 AssertJ(`assertThat`) 스타일을 사용합니다.
+
 ## 개발 포인트
 
 - `Scanner` 기반 입력 처리
@@ -111,7 +113,7 @@ Windows PowerShell:
 - `LocalDate.now()` 기반 등록일 관리
 - 최신글 우선(역순) 목록 출력
 - `App`/`ArticleService`/`Article`/`Rq` 책임 분리
-- JUnit5 기반 단위 테스트 구성
+- JUnit5 + AssertJ 기반 단위 테스트 구성
 
 ## 추가 기능 체크리스트
 
