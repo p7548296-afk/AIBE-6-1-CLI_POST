@@ -1,6 +1,7 @@
 
 
 import controller.ArticleController;
+import lombok.Getter;
 import repository.ArticleRepository;
 import service.ArticleService;
 
@@ -10,14 +11,13 @@ import java.util.Scanner;
 
 public class Container {
     private static Scanner sc;
-    private static ArticleRepository articleRepository;
-    private static ArticleService articleService;
+    @Getter
     private static ArticleController articleController;
 
     public static void init(Scanner scanner) {
         sc = scanner;
-        articleRepository = new ArticleRepository();
-        articleService = new ArticleService(articleRepository);
+        ArticleRepository articleRepository = new ArticleRepository();
+        ArticleService articleService = new ArticleService(articleRepository);
         articleController = new ArticleController(articleService,sc,DATE_FORMATTER);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -30,10 +30,6 @@ public class Container {
         if (sc != null) {
             sc.close();
         }
-    }
-
-    public static ArticleController getArticleController() {
-        return articleController;
     }
 
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
