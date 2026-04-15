@@ -25,33 +25,24 @@ public class App {
         scanner.close();
     }
 
+    // 명령어(actionName)에 따라 기능을 분기 실행하고, 종료 명령이면 true를 반환합니다.
     private boolean handleCommand(Rq rq) {
         String actionName = rq.getActionName();
+        int id = rq.getParamAsInt("id", -1);
 
         switch (actionName) {
-            case "exit":
+            case "exit" -> {
                 System.out.println("프로그램을 종료합니다.");
                 return true;
-            case "write":
-                writeArticle();
-                break;
-            case "list":
-                listArticles();
-                break;
-            case "search":
-                searchArticles(rq.getArg());
-                break;
-            case "detail":
-                showDetail(rq.getParamAsInt("id", -1));
-                break;
-            case "delete":
-                deleteArticle(rq.getParamAsInt("id", -1));
-                break;
-            case "update":
-                updateArticle(rq.getParamAsInt("id", -1));
-                break;
-            default:
-                break;
+            }
+            case "write" -> writeArticle();
+            case "list" -> listArticles();
+            case "search" -> searchArticles(rq.getArg());
+            case "detail" -> showDetail(id);
+            case "delete" -> deleteArticle(id);
+            case "update" -> updateArticle(id);
+            default -> {
+            }
         }
 
         return false;
@@ -102,17 +93,20 @@ public class App {
         printArticlesNewestFirst(matched);
     }
 
+    // 목록/검색 출력용 테이블 헤더를 출력합니다.
     private void printArticleHeader() {
         System.out.println("번호 | 제목 | 등록일 | 조회수");
         System.out.println("-----------------------------");
     }
 
+    // 전달받은 게시글 리스트를 최신글부터(역순) 한 줄씩 출력합니다.
     private void printArticlesNewestFirst(List<Article> articles) {
         for (int i = articles.size() - 1; i >= 0; i--) {
             printArticleRow(articles.get(i));
         }
     }
 
+    // 게시글 한 건을 목록 행 포맷에 맞춰 출력합니다.
     private void printArticleRow(Article article) {
         System.out.println("%d    | %s  | %s | %d".formatted(
                 article.getId(),
@@ -141,11 +135,10 @@ public class App {
     // 게시글 삭제 처리
     private void deleteArticle(int id) {
         if (isInvalidId(id)) return;
-        Article post = findByIdOrPrintMessage(id);
-
-        if (post == null) return;
-
-        articleService.delete(post);
+        if (!articleService.deleteById(id)) {
+            System.out.println("해당 아이디는 존재하지 않습니다.");
+            return;
+        }
         System.out.println("=> 게시글이 삭제되었습니다.");
     }
 
@@ -164,10 +157,11 @@ public class App {
             return;
         }
 
-        articleService.modify(post, title, content);
+        articleService.modifyById(id, title, content);
         System.out.println("=> 게시글이 수정되었습니다.");
     }
 
+    // id로 게시글을 조회하고, 없으면 안내 메시지를 출력한 뒤 null을 반환합니다.
     private Article findByIdOrPrintMessage(int id) {
         Article post = articleService.findById(id);
 
@@ -179,6 +173,7 @@ public class App {
         return post;
     }
 
+    // id가 유효하지 않으면 안내 메시지를 출력하고 true를 반환합니다.
     private boolean isInvalidId(int id) {
         if (id < 0) {
             System.out.println("id를 입력해주세요.");
@@ -188,6 +183,7 @@ public class App {
         return false;
     }
 
+    // 프롬프트를 출력한 뒤 사용자 입력을 받아 양끝 공백을 제거해 반환합니다.
     private String readTrimmedLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim();

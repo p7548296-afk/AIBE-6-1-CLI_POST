@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,9 +81,18 @@ class ArticleServiceTest {
         @DisplayName("게시글 삭제 후 findAll()에서 제거되는지 확인")
         void removesArticleFromList() {
             Article post = service.write("삭제할 글", "내용");
-            service.delete(post);
+            boolean deleted = service.deleteById(post.getId());
 
+            assertTrue(deleted);
             assertTrue(service.findAll().isEmpty());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id 삭제 시 false를 반환하는지 확인")
+        void returnsFalseWhenDeleteIdDoesNotExist() {
+            boolean deleted = service.deleteById(999);
+
+            assertFalse(deleted);
         }
     }
 
@@ -94,11 +104,31 @@ class ArticleServiceTest {
         @DisplayName("수정 후 제목과 내용이 변경되는지 확인")
         void updatesTitleAndContent() {
             Article post = service.write("원래 제목", "원래 내용");
-            service.modify(post, "수정 제목", "수정 내용");
+            boolean modified = service.modifyById(post.getId(), "수정 제목", "수정 내용");
 
+            assertTrue(modified);
             assertEquals("수정 제목", post.getTitle());
             assertEquals("수정 내용", post.getContent());
         }
+
+        @Test
+        @DisplayName("존재하지 않는 id 수정 시 false를 반환하는지 확인")
+        void returnsFalseWhenModifyIdDoesNotExist() {
+            boolean modified = service.modifyById(999, "수정 제목", "수정 내용");
+
+            assertFalse(modified);
+        }
+    }
+
+    @Test
+    @DisplayName("findAll()로 받은 리스트는 수정할 수 없는지 확인")
+    void findAllReturnsUnmodifiableList() {
+        service.write("제목", "내용");
+
+        List<Article> posts = service.findAll();
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> posts.add(new Article(999, "외부 추가", "내용")));
     }
 
     @Nested

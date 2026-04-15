@@ -64,12 +64,14 @@ class AppTest {
         return runAppWithInput(all);
     }
 
+    // output에 expectedTexts가 모두 포함되는지 한 번에 검증하는 헬퍼
     private void assertContainsAll(String output, String... expectedTexts) {
         for (String expected : expectedTexts) {
             assertTrue(output.contains(expected));
         }
     }
 
+    // 마지막으로 출력된 list 표 블록(헤더부터)을 추출하는 헬퍼
     private String extractLastListBlock(String output) {
         String header = "번호 | 제목 | 등록일 | 조회수";
         int idx = output.lastIndexOf(header);

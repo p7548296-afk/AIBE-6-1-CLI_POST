@@ -24,7 +24,7 @@ public class ArticleService {
 
     // 전체 게시글 목록을 반환합니다.
     public List<Article> findAll() {
-        return postList;
+        return List.copyOf(postList);
     }
 
     // id로 게시글을 조회합니다. 없으면 null을 반환합니다.
@@ -37,15 +37,24 @@ public class ArticleService {
         return null;
     }
 
-    // 게시글을 삭제합니다.
-    public void delete(Article post) {
-        postList.remove(post);
+    // id에 해당하는 게시글을 삭제합니다. 삭제 성공 시 true를 반환합니다.
+    public boolean deleteById(int id) {
+        Article post = findById(id);
+        if (post == null) {
+            return false;
+        }
+        return postList.remove(post);
     }
 
-    // 게시글의 제목과 내용을 수정합니다.
-    public void modify(Article post, String title, String content) {
+    // id에 해당하는 게시글의 제목과 내용을 수정합니다. 수정 성공 시 true를 반환합니다.
+    public boolean modifyById(int id, String title, String content) {
+        Article post = findById(id);
+        if (post == null) {
+            return false;
+        }
         post.setTitle(title);
         post.setContent(content);
+        return true;
     }
 
     // 키워드로 게시글을 검색합니다. (제목 또는 내용에 키워드가 포함된 게시글 반환)
