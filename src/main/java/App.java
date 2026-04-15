@@ -1,5 +1,5 @@
 import controller.ArticleController;
-import util.Rq;
+import global.dto.Rq;
 
 import java.util.Scanner;
 

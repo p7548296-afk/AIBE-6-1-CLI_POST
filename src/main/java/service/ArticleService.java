@@ -2,8 +2,8 @@ package service;
 
 import domain.Article;
 import repository.ArticleRepository;
-import util.Page;
-import util.Pageable;
+import global.dto.Page;
+import global.dto.Pageable;
 
 import java.util.List;
 

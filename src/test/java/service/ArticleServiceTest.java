@@ -5,8 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.ArticleRepository;
-import util.Page;
-import util.Pageable;
+import global.dto.Page;
+import global.dto.Pageable;
 
 
 import static org.assertj.core.api.Assertions.assertThat;

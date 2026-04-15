@@ -2,11 +2,10 @@ package controller;
 
 import domain.Article;
 import service.ArticleService;
-import util.Page;
-import util.Pageable;
-import util.Rq;
+import global.dto.Page;
+import global.dto.Pageable;
+import global.dto.Rq;
 
-import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 

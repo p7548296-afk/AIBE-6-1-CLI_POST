@@ -57,14 +57,15 @@ src
 │       │   └── ArticleController.java  # 사용자 인터페이스 및 입출력 제어
 │       ├── domain
 │       │   └── Article.java    # 게시글 데이터 도메인 객체
+│       ├── global
+│       │   └── dto             # 전역적으로 사용되는 데이터 전송 객체(DTO)
+│       │       ├── Page.java   # 페이징 결과 데이터 및 메타정보 객체
+│       │       ├── Pageable.java # 페이징 요청 규격(페이지 번호, 사이즈) 객체
+│       │       └── Rq.java     # URL 쿼리 파싱 및 명령어 해석 DTO
 │       ├── repository
 │       │   └── ArticleRepository.java # 데이터 스토리지 직접 접근 (In-Memory)
-│       ├── service
-│       │   └── ArticleService.java    # 비즈니스 로직 및 검증 계층
-│       └── util
-│           ├── Rq.java         # 명령어 파싱 유틸리티
-│           ├── Page.java       # 페이징 결과 데이터 및 메타정보(전체 페이지 등) 객체
-│           └── Pageable.java   # 페이징 요청 정보(페이지 번호, 사이즈) 객체
+│       └── service
+│           └── ArticleService.java    # 비즈니스 로직 및 페이징 가공 계층
 └── test
     └── java
         ├── AppTest.java        # 전체 시나리오 통합 테스트 (AppTestRunner 활용)

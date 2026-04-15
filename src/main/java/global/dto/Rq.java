@@ -1,4 +1,4 @@
-package util;
+package global.dto;
 
 import lombok.Getter;
 import java.util.HashMap;

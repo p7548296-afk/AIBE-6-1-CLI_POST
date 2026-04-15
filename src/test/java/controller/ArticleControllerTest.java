@@ -3,7 +3,7 @@ package controller;
 import org.junit.jupiter.api.*;
 import repository.ArticleRepository;
 import service.ArticleService;
-import util.Rq;
+import global.dto.Rq;
 import util.TestUtil;
 
 import java.io.ByteArrayOutputStream;
