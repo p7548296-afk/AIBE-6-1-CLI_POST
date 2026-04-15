@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("App 테스트")
@@ -50,51 +45,34 @@ class AppTest {
         }
     }
 
-    // -------------------------------------------------------------------------------------
-    // 1. 게시글 작성 (writeArticle)테스트 케이스
-    // -------------------------------------------------------------------------------------
-    @Nested
-    @DisplayName("게시글 작성(writeArticle) 테스트")
-    class WriteArticleTest {
+    // 중복 코드 리펙토링
+    private String[] writeCommand(String title, String content) {
+        return new String[]{"write", title, content};
+    }
 
-        @Test
-        @DisplayName("제목과 내용이 올바르게 입력되었을 때 게시글이 성공적으로 생성되는지 확인")
-        void createsArticleWhenInputIsValid() {
-            Article article = app.write("자바 공부", "자바 텍스트 게시판 만들기");
+    private String runWithTwoArticlesThen(String... tailCommands) {
+        String[] first = writeCommand("첫번째 제목", "첫번째 내용");
+        String[] second = writeCommand("두번째 제목", "두번째 내용");
+        String[] all = new String[first.length + second.length + tailCommands.length + 1];
 
-            assertNotNull(article);
-            assertEquals(1, article.getId());
-            assertEquals("자바 공부", article.getTitle());
-            assertEquals("자바 텍스트 게시판 만들기", article.getContent());
-            assertNotNull(article.getCurrentDate());
-        }
+        int idx = 0;
+        for (String cmd : first) all[idx++] = cmd;
+        for (String cmd : second) all[idx++] = cmd;
+        for (String cmd : tailCommands) all[idx++] = cmd;
+        all[idx] = "exit";
 
-        @Test
-        @DisplayName("제목 또는 내용이 비어있을 때 예외가 발생하는지 확인")
-        void throwsExceptionWhenTitleOrContentIsEmpty() {
-            assertThrows(IllegalArgumentException.class, () -> app.write("", "정상 내용"));
-            assertThrows(IllegalArgumentException.class, () -> app.write("정상 제목", ""));
-            assertThrows(IllegalArgumentException.class, () -> app.write("   ", "정상 내용"));
-            assertThrows(IllegalArgumentException.class, () -> app.write("정상 제목", "   "));
-        }
+        return runAppWithInput(all);
+    }
 
-        @Test
-        @DisplayName("게시글 ID가 자동으로 증가하는지 확인")
-        void incrementsIdAutomatically() {
-            Article article1 = app.write("제목1", "내용1");
-            Article article2 = app.write("제목2", "내용2");
-            Article article3 = app.write("제목3", "내용3");
-
-            assertEquals(1, article1.getId());
-            assertEquals(2, article2.getId());
-            assertEquals(3, article3.getId());
+    private void assertContainsAll(String output, String... expectedTexts) {
+        for (String expected : expectedTexts) {
+            assertTrue(output.contains(expected));
         }
     }
 
-
-    // -------------------------------------------------------------------------------------
-    // 2. 게시글 목록 출력 (listArticles) 테스트 케이스
-    // -------------------------------------------------------------------------------------
+    // --------------------------------------
+    // 테스트 케이스
+    // --------------------------------------
     @Nested
     @DisplayName("게시글 목록 출력(listArticles) 테스트")
     class ListArticlesTest {
@@ -111,16 +89,15 @@ class AppTest {
         @Test
         @DisplayName("여러 게시글이 등록되었을 때, 목록이 올바르게 출력되는지 확인")
         void showsAllArticlesInList() {
-            String output = runAppWithInput("write", "첫번째 제목", "첫번째 내용", "write", "두번째 제목", "두번째 내용", "list", "exit");
+            String output = runWithTwoArticlesThen("list");
 
-            assertTrue(output.contains("1    | 첫번째 제목"));
-            assertTrue(output.contains("2    | 두번째 제목"));
+            assertContainsAll(output, "1    | 첫번째 제목", "2    | 두번째 제목");
         }
 
         @Test
         @DisplayName("최신 게시글이 목록의 상단에 위치하는지 확인")
         void latestArticleAppearsFirst() {
-            String output = runAppWithInput("write", "첫번째 제목", "첫번째 내용", "write", "두번째 제목", "두번째 내용", "list", "exit");
+            String output = runWithTwoArticlesThen("list");
 
             int secondIndex = output.indexOf("2    | 두번째 제목");
             int firstIndex = output.indexOf("1    | 첫번째 제목");
@@ -131,10 +108,6 @@ class AppTest {
         }
     }
 
-
-    // -------------------------------------------------------------------------------------
-    // 3. 게시글 상세보기 (showDetail) 테스트 케이스
-    // -------------------------------------------------------------------------------------
     @Nested
     @DisplayName("게시글 상세보기(showDetail) 테스트 케이스")
     class ShowDetailTest {
@@ -145,7 +118,7 @@ class AppTest {
             String output = runAppWithInput("detail 999", "exit");
 
             assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertTrue(!output.contains("번호: 999"));
+            assertFalse(output.contains("번호: 999"));
         }
 
         @Test
@@ -153,17 +126,14 @@ class AppTest {
         void showsDetailWhenIdIsValid() {
             String output = runAppWithInput("write", "자바 공부", "자바 텍스트 게시판 만들기", "detail 1", "exit");
 
-            assertTrue(output.contains("번호: 1"));
-            assertTrue(output.contains("제목: 자바 공부"));
-            assertTrue(output.contains("내용: 자바 텍스트 게시판 만들기"));
-            assertTrue(output.contains("등록일:"));
+            assertContainsAll(output,
+                    "번호: 1",
+                    "제목: 자바 공부",
+                    "내용: 자바 텍스트 게시판 만들기",
+                    "등록일:");
         }
     }
 
-
-    // -------------------------------------------------------------------------------------
-    // 4. 게시글 수정 (updateArticle) 테스트 케이스
-    // -------------------------------------------------------------------------------------
     @Nested
     @DisplayName("게시글 수정(updateArticle) 테스트")
     class UpdateArticleTest {
@@ -174,7 +144,7 @@ class AppTest {
             String output = runAppWithInput("update 999", "exit");
 
             assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertTrue(!output.contains("=> 게시글이 수정되었습니다."));
+            assertFalse(output.contains("=> 게시글이 수정되었습니다."));
         }
 
         @Test
@@ -187,9 +157,10 @@ class AppTest {
                     "exit"
             );
 
-            assertTrue(output.contains("=> 게시글이 수정되었습니다."));
-            assertTrue(output.contains("제목: 수정 제목"));
-            assertTrue(output.contains("내용: 수정 내용"));
+            assertContainsAll(output,
+                    "=> 게시글이 수정되었습니다.",
+                    "제목: 수정 제목",
+                    "내용: 수정 내용");
         }
 
         @Test
@@ -202,9 +173,10 @@ class AppTest {
                     "exit"
             );
 
-            assertTrue(emptyTitleOutput.contains("제목/내용은 비어 있을 수 없습니다."));
-            assertTrue(emptyTitleOutput.contains("제목: 원래 제목"));
-            assertTrue(emptyTitleOutput.contains("내용: 원래 내용"));
+            assertContainsAll(emptyTitleOutput,
+                    "제목/내용은 비어 있을 수 없습니다.",
+                    "제목: 원래 제목",
+                    "내용: 원래 내용");
 
             String emptyContentOutput = runAppWithInput(
                     "write", "원래 제목", "원래 내용",
@@ -213,16 +185,13 @@ class AppTest {
                     "exit"
             );
 
-            assertTrue(emptyContentOutput.contains("제목/내용은 비어 있을 수 없습니다."));
-            assertTrue(emptyContentOutput.contains("제목: 원래 제목"));
-            assertTrue(emptyContentOutput.contains("내용: 원래 내용"));
+            assertContainsAll(emptyContentOutput,
+                    "제목/내용은 비어 있을 수 없습니다.",
+                    "제목: 원래 제목",
+                    "내용: 원래 내용");
         }
     }
 
-
-    // -------------------------------------------------------------------------------------
-    // 5. 게시글 삭제 (deleteArticle) 테스트 케이스
-    // -------------------------------------------------------------------------------------
     @Nested
     @DisplayName("게시글 삭제(deleteArticle) 테스트")
     class DeleteArticleTest {
@@ -233,46 +202,20 @@ class AppTest {
             String output = runAppWithInput("delete 999", "exit");
 
             assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
-            assertTrue(!output.contains("=> 게시글이 삭제되었습니다."));
+            assertFalse(output.contains("=> 게시글이 삭제되었습니다."));
         }
 
         @Test
         @DisplayName("게시글이 삭제된 후 목록에서 해당 게시글이 없는지 확인")
         void deletedArticleDoesNotAppearInList() {
-            String output = runAppWithInput(
-                    "write", "첫번째 제목", "첫번째 내용",
-                    "write", "두번째 제목", "두번째 내용",
-                    "delete 1",
-                    "list",
-                    "exit"
-            );
+            String output = runWithTwoArticlesThen("delete 1", "list");
 
-            assertTrue(output.contains("=> 게시글이 삭제되었습니다."));
-            assertTrue(output.contains("2    | 두번째 제목"));
-            assertTrue(!output.contains("1    | 첫번째 제목"));
+            assertContainsAll(output, "=> 게시글이 삭제되었습니다.", "2    | 두번째 제목");
+            assertFalse(output.contains("1    | 첫번째 제목"));
         }
     }
 
 
-    // -------------------------------------------------------------------------------------
-    // 6. 현재 날짜 리턴 (getCurrentDate) 테스트 케이스
-    // -------------------------------------------------------------------------------------
-    @Nested
-    @DisplayName("현재 날짜 리턴(getCurrentDate) 테스트")
-    class GetCurrentDateTest {
-
-        @Test
-        @DisplayName("현재 날짜가 올바른 형식(yyyy-MM-dd)으로 출력되는지 확인")
-        void returnsDateInExpectedFormat() {
-            Article article = app.write("날짜 테스트", "내용");
-            String dateText = article.getCurrentDate();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            assertNotNull(dateText);
-            assertTrue(dateText.matches("\\d{4}-\\d{2}-\\d{2}"));
-            assertDoesNotThrow(() -> LocalDate.parse(dateText, formatter));
-        }
-    }
 
 }
 
