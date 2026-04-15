@@ -7,22 +7,21 @@ class AppTest {
     @Test
     @DisplayName("전체 시나리오: 등록 -> 목록 -> 상세 -> 수정 -> 삭제")
     void t1() {
-        // 사용자 입력 시뮬레이션
         String input = """
-                write
-                제목1
-                내용1
-                write
-                제목2
-                내용2
-                list
-                detail 1
-                update 2
-                수정제목
-                수정내용
-                delete 1
-                list
-                """;
+            write
+            제목1
+            내용1
+            write
+            제목2
+            내용2
+            list?page=1&pagesize=5
+            detail?id=1
+            update?id=2
+            수정제목
+            수정내용
+            delete?id=1
+            list?page=1
+            """;
 
         String rs = AppTestRunner.run(input);
 
@@ -37,6 +36,9 @@ class AppTest {
 
         assertThat(lastResult).doesNotContain("1 | 제목1");
         assertThat(lastResult).contains("2 | 수정제목");
+
+        assertThat(rs).contains("1 / 1"); // 페이지 정보가 찍혔는지 확인
+        assertThat(rs).contains("2번 게시글이 수정되었습니다.");
     }
 
     @Test

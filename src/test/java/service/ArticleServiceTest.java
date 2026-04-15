@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.ArticleRepository;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -93,5 +95,32 @@ class ArticleServiceTest {
         assertThatThrownBy(() -> articleService.remove(999))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("999번 게시글은 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("getArticles - 페이징 처리가 정확하게 이루어져야 한다")
+    void getArticles_paging_test() {
+        // given
+        for (int i = 1; i <= 10; i++) {
+            articleService.write("제목" + i, "내용" + i);
+        }
+
+        // when
+        List<Article> page2 = articleService.getArticles(2, 3);
+
+        // then
+        assertThat(page2).hasSize(3);
+        assertThat(page2.get(0).getTitle()).isEqualTo("제목7");
+        assertThat(page2.get(2).getTitle()).isEqualTo("제목5");
+    }
+
+    @Test
+    @DisplayName("getTotalPage - 전체 페이지 수가 올바르게 계산되어야 한다")
+    void getTotalPage_test() {
+        // given
+        for (int i = 1; i <= 11; i++) articleService.write("제목", "내용");
+
+        // when & then
+        assertThat(articleService.getTotalPage(5)).isEqualTo(3);
     }
 }

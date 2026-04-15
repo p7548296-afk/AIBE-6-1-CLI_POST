@@ -48,14 +48,18 @@ class ArticleControllerTest {
     }
 
     @Test
-    @DisplayName("showList: 게시글이 없을 때 안내 메시지를 출력한다")
+    @DisplayName("showList: 게시글이 있을 때 목록과 페이지 정보를 출력한다")
     void t2() {
+        service.write("제목1", "내용1");
         Scanner sc = TestUtil.genScanner("");
         ArticleController controller = new ArticleController(service, sc, formatter);
 
-        controller.showList();
+        controller.showList(new Rq("list?page=1&pagesize=5"));
 
-        assertThat(output.toString()).contains("게시글이 존재하지 않습니다.");
+        String out = output.toString();
+        assertThat(out).contains("번호 | 제목 | 등록일");
+        assertThat(out).contains("1 | 제목1");
+        assertThat(out).contains("--- 현재 페이지: 1 / 1 ---");
     }
 
     @Test
@@ -68,7 +72,7 @@ class ArticleControllerTest {
         ArticleController controller = new ArticleController(service, sc, formatter);
 
         // when
-        controller.doModify(new Rq("update 1"));
+        controller.doModify(new Rq("update?id=1"));
 
         // then
         String out = output.toString();
@@ -85,7 +89,7 @@ class ArticleControllerTest {
         ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
 
         // when
-        controller.doDelete(new Rq("delete 1"));
+        controller.doDelete(new Rq("delete?id=1"));
 
         // then
         assertThat(output.toString()).contains("1번 게시글이 삭제되었습니다.");
@@ -99,7 +103,7 @@ class ArticleControllerTest {
         ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
 
         // when
-        controller.showDetail(new Rq("detail 1"));
+        controller.showDetail(new Rq("detail?id=1"));
 
         // then
         String out = output.toString();
@@ -118,7 +122,7 @@ class ArticleControllerTest {
         ArticleController controller = new ArticleController(service, new Scanner(""), formatter);
 
         // when
-        controller.showDetail(new Rq("detail 99"));
+        controller.showDetail(new Rq("detail?id=99"));
 
         // then
         String out = output.toString();
@@ -134,7 +138,7 @@ class ArticleControllerTest {
         ArticleController controller = new ArticleController(service, sc, formatter);
 
         // when
-        controller.doModify(new Rq("update 99"));
+        controller.doModify(new Rq("update?id=99"));
 
         // then
         String out = output.toString();

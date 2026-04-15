@@ -2,52 +2,66 @@ package util;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RqTest {
+
     @Test
-    @DisplayName("명령어에서 경로와 ID를 잘 추출한다")
+    @DisplayName("경로와 단일 파라미터(id) 추출 테스트")
     void t1() {
-        Rq rq = new Rq("detail 1");
+        Rq rq = new Rq("detail?id=1");
         assertThat(rq.getActionPath()).isEqualTo("detail");
-        assertThat(rq.getId()).isEqualTo(1);
+        assertThat(rq.getIntParam("id", 0)).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("ID가 없는 명령어의 경우 ID는 0을 반환한다")
+    @DisplayName("복합 파라미터(page, pageSize, order) 추출 테스트")
     void t2() {
+        Rq rq = new Rq("list?page=2&pagesize=10&order=reverse");
+        assertThat(rq.getActionPath()).isEqualTo("list");
+        assertThat(rq.getIntParam("page", 1)).isEqualTo(2);
+        assertThat(rq.getIntParam("pagesize", 5)).isEqualTo(10);
+        assertThat(rq.getParam("order", "default")).isEqualTo("reverse");
+    }
+
+    @Test
+    @DisplayName("파라미터가 없을 때 기본값을 잘 반환하는지 테스트")
+    void t3() {
         Rq rq = new Rq("list");
         assertThat(rq.getActionPath()).isEqualTo("list");
-        assertThat(rq.getId()).isEqualTo(0);
+        assertThat(rq.getIntParam("page", 1)).isEqualTo(1);
+        assertThat(rq.getParam("order", "reverse")).isEqualTo("reverse");
     }
 
     @Test
-    @DisplayName("ID 자리에 문자가 들어와도 프로그램이 터지지 않고 0을 반환한다")
-    void t3() {
-        Rq rq = new Rq("detail abc");
-        assertThat(rq.getId()).isEqualTo(0);
-    }
-    @Test
-    @DisplayName("공백이 섞여있어도 경로를 잘 추출해야 한다")
+    @DisplayName("잘못된 형식의 파라미터(문자 입력 등) 시 기본값 반환 테스트")
     void t4() {
-        Rq rq = new Rq("  detail  1  ");
-        assertThat(rq.getActionPath()).isEqualTo("detail");
-        assertThat(rq.getId()).isEqualTo(1);
+        Rq rq = new Rq("list?page=abc&id=999999999999999");
+        // 숫자가 아니거나 범위를 벗어나면 기본값 반환
+        assertThat(rq.getIntParam("page", 1)).isEqualTo(1);
+        assertThat(rq.getIntParam("id", 0)).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("숫자가 너무 크면 id는 0이 되어야 한다 (int 범위 초과)")
+    @DisplayName("URL에 공백이 섞여있어도 경로를 잘 추출해야 한다")
     void t5() {
-        Rq rq = new Rq("detail 99999999999999999");
-        assertThat(rq.getId()).isEqualTo(0);
+        Rq rq = new Rq("  list?page=1  ");
+        assertThat(rq.getActionPath()).isEqualTo("list");
+        assertThat(rq.getIntParam("page", 0)).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("명령어 없이 공백만 들어왔을 때 에러가 나지 않아야 한다")
+    @DisplayName("파라미터 값에 공백이 포함된 경우 처리")
     void t6() {
-        Rq rq = new Rq("   ");
-        assertThat(rq.getActionPath()).isNotNull();
+        Rq rq = new Rq("list?search=  java  ");
+        assertThat(rq.getParam("search", "")).isEqualTo("java");
+    }
+
+    @Test
+    @DisplayName("경로만 있고 물음표만 찍힌 경우 에러가 나지 않아야 한다")
+    void t7() {
+        Rq rq = new Rq("list?");
+        assertThat(rq.getActionPath()).isEqualTo("list");
+        assertThat(rq.getIntParam("page", 1)).isEqualTo(1);
     }
 }
