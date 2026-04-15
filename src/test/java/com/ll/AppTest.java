@@ -70,6 +70,13 @@ class AppTest {
         }
     }
 
+    private String extractLastListBlock(String output) {
+        String header = "번호 | 제목 | 등록일 | 조회수";
+        int idx = output.lastIndexOf(header);
+        if (idx < 0) return "";
+        return output.substring(idx);
+    }
+
     // --------------------------------------
     // 테스트 케이스
     // --------------------------------------
@@ -82,7 +89,7 @@ class AppTest {
         void showsEmptyMessageWhenNoArticles() {
             String output = runAppWithInput("list", "exit");
 
-            assertTrue(output.contains("번호 | 제목 | 등록일"));
+            assertTrue(output.contains("번호 | 제목 | 등록일 | 조회수"));
             assertTrue(output.contains("(게시글 없음)"));
         }
 
@@ -105,6 +112,48 @@ class AppTest {
             assertTrue(secondIndex >= 0);
             assertTrue(firstIndex >= 0);
             assertTrue(secondIndex < firstIndex);
+        }
+
+        @Test
+        @DisplayName("list에서 신규 게시글 조회수가 0으로 표시되는지 확인")
+        void showsZeroViewCountInListForNewArticle() {
+            String output = runAppWithInput(
+                    "write", "조회수 초기 테스트", "내용",
+                    "list",
+                    "exit"
+            );
+
+            String listBlock = extractLastListBlock(output);
+            assertContainsAll(listBlock, "번호 | 제목 | 등록일 | 조회수", "1    | 조회수 초기 테스트", "| 0");
+        }
+
+        @Test
+        @DisplayName("detail 이후 list에서 조회수가 증가한 값으로 표시되는지 확인")
+        void reflectsIncreasedViewCountInListAfterDetail() {
+            String output = runAppWithInput(
+                    "write", "조회수 반영 테스트", "내용",
+                    "detail 1",
+                    "list",
+                    "exit"
+            );
+
+            String listBlock = extractLastListBlock(output);
+            assertContainsAll(listBlock, "1    | 조회수 반영 테스트", "| 1");
+        }
+
+        @Test
+        @DisplayName("여러 게시글 중 상세 조회한 게시글만 조회수가 증가하는지 확인")
+        void increasesViewCountOnlyForViewedArticleInList() {
+            String output = runAppWithInput(
+                    "write", "첫번째 글", "내용1",
+                    "write", "두번째 글", "내용2",
+                    "detail 1",
+                    "list",
+                    "exit"
+            );
+
+            String listBlock = extractLastListBlock(output);
+            assertContainsAll(listBlock, "2    | 두번째 글", "| 0", "1    | 첫번째 글", "| 1");
         }
     }
 
@@ -244,6 +293,19 @@ class AppTest {
             );
 
             assertContainsAll(output, "1    | 자바 공부", "2    | 스프링 공부");
+        }
+
+        @Test
+        @DisplayName("search 결과에도 조회수가 함께 표시되는지 확인")
+        void showsViewCountInSearchResult() {
+            String output = runAppWithInput(
+                    "write", "자바 공부", "컬렉션 학습",
+                    "detail 1",
+                    "search 자바",
+                    "exit"
+            );
+
+            assertContainsAll(output, "번호 | 제목 | 등록일 | 조회수", "1    | 자바 공부", "| 1");
         }
 
         @Test

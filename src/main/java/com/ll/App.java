@@ -103,7 +103,7 @@ public class App {
     }
 
     private void printArticleHeader() {
-        System.out.println("번호 | 제목 | 등록일");
+        System.out.println("번호 | 제목 | 등록일 | 조회수");
         System.out.println("-----------------------------");
     }
 
@@ -114,7 +114,12 @@ public class App {
     }
 
     private void printArticleRow(Article article) {
-        System.out.println("%d    | %s  | %s".formatted(article.getId(), article.getTitle(), article.getCurrentDate()));
+        System.out.println("%d    | %s  | %s | %d".formatted(
+                article.getId(),
+                article.getTitle(),
+                article.getCurrentDate(),
+                article.getCount()
+        ));
     }
 
     // 특정 게시글의 상세 내용 출력
