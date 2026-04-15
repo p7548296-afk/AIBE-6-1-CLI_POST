@@ -1,7 +1,10 @@
 package util;
 
+import lombok.Getter;
+
+@Getter
 public class Rq {
-    private String actionPath;
+    private final String actionPath;
     private int id;
 
     public Rq(String command) {
@@ -25,6 +28,4 @@ public class Rq {
         }
     }
 
-    public String getActionPath() { return actionPath; }
-    public int getId() { return id; }
 }
