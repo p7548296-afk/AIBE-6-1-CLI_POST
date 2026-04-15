@@ -62,7 +62,9 @@ src
 │       ├── service
 │       │   └── ArticleService.java    # 비즈니스 로직 및 검증 계층
 │       └── util
-│           └── Rq.java         # 명령어 파싱 유틸리티
+│           ├── Rq.java         # 명령어 파싱 유틸리티
+│           ├── Page.java       # 페이징 결과 데이터 및 메타정보(전체 페이지 등) 객체
+│           └── Pageable.java   # 페이징 요청 정보(페이지 번호, 사이즈) 객체
 └── test
     └── java
         ├── AppTest.java        # 전체 시나리오 통합 테스트 (AppTestRunner 활용)
