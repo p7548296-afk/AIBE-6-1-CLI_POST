@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -247,6 +250,27 @@ class AppTest {
             assertTrue(output.contains("=> 게시글이 삭제되었습니다."));
             assertTrue(output.contains("2    | 두번째 제목"));
             assertTrue(!output.contains("1    | 첫번째 제목"));
+        }
+    }
+
+
+    // -------------------------------------------------------------------------------------
+    // 6. 현재 날짜 리턴 (getCurrentDate) 테스트 케이스
+    // -------------------------------------------------------------------------------------
+    @Nested
+    @DisplayName("현재 날짜 리턴(getCurrentDate) 테스트")
+    class GetCurrentDateTest {
+
+        @Test
+        @DisplayName("현재 날짜가 올바른 형식(yyyy-MM-dd)으로 출력되는지 확인")
+        void returnsDateInExpectedFormat() {
+            Article article = app.write("날짜 테스트", "내용");
+            String dateText = article.getCurrentDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            assertNotNull(dateText);
+            assertTrue(dateText.matches("\\d{4}-\\d{2}-\\d{2}"));
+            assertDoesNotThrow(() -> LocalDate.parse(dateText, formatter));
         }
     }
 }
