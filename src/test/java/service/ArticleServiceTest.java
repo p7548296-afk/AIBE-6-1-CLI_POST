@@ -5,8 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.ArticleRepository;
+import util.Page;
+import util.Pageable;
 
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -98,20 +99,42 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("getArticles - 페이징 처리가 정확하게 이루어져야 한다")
+    @DisplayName("getArticles - Pageable을 이용한 페이징 처리가 정확하게 이루어져야 한다")
     void getArticles_paging_test() {
         // given
         for (int i = 1; i <= 10; i++) {
             articleService.write("제목" + i, "내용" + i);
         }
 
+        // 2페이지, 페이지당 3개씩 요청 (인덱스: 3, 4, 5)
+        // 최신순 정렬 시 ID: 10,9,8(1p) / 7,6,5(2p) / 4,3,2(3p) / 1(4p)
+        Pageable pageable = new Pageable(2, 3);
+
         // when
-        List<Article> page2 = articleService.getArticles(2, 3);
+        Page<Article> articlePage = articleService.getArticles(pageable);
 
         // then
-        assertThat(page2).hasSize(3);
-        assertThat(page2.get(0).getTitle()).isEqualTo("제목7");
-        assertThat(page2.get(2).getTitle()).isEqualTo("제목5");
+        assertThat(articlePage.getContent()).hasSize(3);
+        assertThat(articlePage.getContent().get(0).getTitle()).isEqualTo("제목7");
+        assertThat(articlePage.getContent().get(2).getTitle()).isEqualTo("제목5");
+        assertThat(articlePage.getCurrentPage()).isEqualTo(2);
+        assertThat(articlePage.getTotalPages()).isEqualTo(4); // 10개 글, 페이지당 3개 -> 총 4페이지
+    }
+
+    @Test
+    @DisplayName("getArticles - 데이터가 없는 페이지 요청 시 빈 리스트와 올바른 페이지 정보를 반환한다")
+    void getArticles_empty_page_test() {
+        // given
+        for (int i = 1; i <= 5; i++) articleService.write("제목", "내용");
+        Pageable pageable = new Pageable(2, 5);
+
+        // when
+        Page<Article> articlePage = articleService.getArticles(pageable);
+
+        // then
+        assertThat(articlePage.getContent()).isEmpty();
+        assertThat(articlePage.getTotalPages()).isEqualTo(1);
+        assertThat(articlePage.getCurrentPage()).isEqualTo(2);
     }
 
     @Test

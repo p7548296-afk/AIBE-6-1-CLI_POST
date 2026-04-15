@@ -2,11 +2,12 @@ package controller;
 
 import domain.Article;
 import service.ArticleService;
+import util.Page;
+import util.Pageable;
 import util.Rq;
 
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 public class ArticleController {
@@ -30,24 +31,21 @@ public class ArticleController {
     }
 
     public void showList(Rq rq) {
-        int page = rq.getIntParam("page", 1);
-        int pageSize = rq.getIntParam("pagesize", 5);
+        Pageable pageable = rq.getPageable(5);
+        Page<Article> articlePage = articleService.getArticles(pageable);
 
-        List<Article> articles = articleService.getArticles(page, pageSize);
-        int totalPage = articleService.getTotalPage(pageSize);
-
-        if (articles.isEmpty()) {
+        if (articlePage.getContent().isEmpty()) {
             System.out.println("해당 페이지에 게시글이 없습니다.");
             return;
         }
 
-        System.out.printf("--- %d 페이지 목록 ---\n", page);
         System.out.println("번호 | 제목 | 등록일");
-        articles.forEach(a ->
+        articlePage.getContent().forEach(a ->
                 System.out.printf("%d | %s | %s\n",
                         a.getId(), a.getTitle(), a.getRegDate().format(DATE_FORMATTER)));
 
-        System.out.printf("--- 현재 페이지: %d / %d ---\n", page, totalPage);
+        System.out.printf("--- 현재 페이지: %d / %d ---\n",
+                articlePage.getCurrentPage(), articlePage.getTotalPages());
 
     }
 

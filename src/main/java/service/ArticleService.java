@@ -2,6 +2,9 @@ package service;
 
 import domain.Article;
 import repository.ArticleRepository;
+import util.Page;
+import util.Pageable;
+
 import java.util.List;
 
 public class ArticleService {
@@ -15,19 +18,22 @@ public class ArticleService {
         return articleRepository.save(title, content);
     }
 
-    public List<Article> getArticles(int page, int pageSize) {
+    public Page<Article> getArticles(Pageable pageable) {
         List<Article> allArticles = articleRepository.findAll();
+        int totalCount = allArticles.size();
 
-        int fromIndex = (page - 1) * pageSize;
+        int totalPages = (totalCount == 0) ? 1 : (int) Math.ceil((double) totalCount / pageable.getPageSize());
 
-        if (fromIndex >= allArticles.size()) {
-            System.out.println("해당 페이지에 게시물이 없습니다");
-            return List.of();
+        int fromIndex = pageable.getOffset();
+
+        if (fromIndex >= totalCount) {
+            return new Page<>(List.of(), pageable.getPage(), totalPages);
         }
 
-        int toIndex = Math.min(fromIndex + pageSize, allArticles.size());
+        int toIndex = Math.min(fromIndex + pageable.getPageSize(), totalCount);
+        List<Article> content = allArticles.subList(fromIndex, toIndex);
 
-        return allArticles.subList(fromIndex, toIndex);
+        return new Page<>(content, pageable.getPage(), totalPages);
     }
 
     public int getTotalPage(int pageSize) {
