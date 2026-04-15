@@ -273,5 +273,6 @@ class AppTest {
             assertDoesNotThrow(() -> LocalDate.parse(dateText, formatter));
         }
     }
+
 }
 
