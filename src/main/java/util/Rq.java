@@ -40,4 +40,10 @@ public class Rq {
             return defaultValue;
         }
     }
+
+    public Pageable getPageable(int defaultPageSize) {
+        int page = getIntParam("page", 1);
+        int pageSize = getIntParam("pagesize", defaultPageSize);
+        return new Pageable(page, pageSize);
+    }
 }
