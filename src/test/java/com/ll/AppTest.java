@@ -156,5 +156,64 @@ class AppTest {
             assertTrue(output.contains("등록일:"));
         }
     }
+
+
+    // -------------------------------------------------------------------------------------
+    // 4. 게시글 수정 (updateArticle) 테스트 케이스
+    // -------------------------------------------------------------------------------------
+    @Nested
+    @DisplayName("게시글 수정(updateArticle) 테스트")
+    class UpdateArticleTest {
+
+        @Test
+        @DisplayName("존재하지 않는 ID로 수정 요청 시 예외 상황 메시지가 출력되는지 확인")
+        void showsErrorMessageWhenUpdateIdDoesNotExist() {
+            String output = runAppWithInput("update 999", "exit");
+
+            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
+            assertTrue(!output.contains("=> 게시글이 수정되었습니다."));
+        }
+
+        @Test
+        @DisplayName("제목과 내용을 수정할 때, 수정된 내용이 올바르게 반영되는지 확인")
+        void updatesTitleAndContentCorrectly() {
+            String output = runAppWithInput(
+                    "write", "원래 제목", "원래 내용",
+                    "update 1", "수정 제목", "수정 내용",
+                    "detail 1",
+                    "exit"
+            );
+
+            assertTrue(output.contains("=> 게시글이 수정되었습니다."));
+            assertTrue(output.contains("제목: 수정 제목"));
+            assertTrue(output.contains("내용: 수정 내용"));
+        }
+
+        @Test
+        @DisplayName("제목 또는 내용이 비어있을 때 수정이 불가능한지 확인")
+        void cannotUpdateWhenTitleOrContentIsEmpty() {
+            String emptyTitleOutput = runAppWithInput(
+                    "write", "원래 제목", "원래 내용",
+                    "update 1", "", "수정 내용",
+                    "detail 1",
+                    "exit"
+            );
+
+            assertTrue(emptyTitleOutput.contains("제목/내용은 비어 있을 수 없습니다."));
+            assertTrue(emptyTitleOutput.contains("제목: 원래 제목"));
+            assertTrue(emptyTitleOutput.contains("내용: 원래 내용"));
+
+            String emptyContentOutput = runAppWithInput(
+                    "write", "원래 제목", "원래 내용",
+                    "update 1", "수정 제목", "",
+                    "detail 1",
+                    "exit"
+            );
+
+            assertTrue(emptyContentOutput.contains("제목/내용은 비어 있을 수 없습니다."));
+            assertTrue(emptyContentOutput.contains("제목: 원래 제목"));
+            assertTrue(emptyContentOutput.contains("내용: 원래 내용"));
+        }
+    }
 }
 

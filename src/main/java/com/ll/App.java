@@ -198,6 +198,11 @@ public class App {
         System.out.printf("내용 (현재: %s): ", post.getContent());
         String content = scanner.nextLine().trim();
 
+        if (title.isEmpty() || content.isEmpty()) {
+            System.out.println("제목/내용은 비어 있을 수 없습니다.");
+            return;
+        }
+
         modify(post, title, content);
         System.out.println("=> 게시글이 수정되었습니다.");
     }
