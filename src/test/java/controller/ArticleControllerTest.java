@@ -111,6 +111,7 @@ class ArticleControllerTest {
                 .contains("번호: 1")
                 .contains("제목: 상세 제목")
                 .contains("내용: 상세 내용")
+                .contains("조회수: 1")
                 .contains("등록일: ")
                 .contains("수정일: ");
     }

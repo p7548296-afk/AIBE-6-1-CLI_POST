@@ -43,9 +43,11 @@ public class ArticleService {
         return (int) Math.ceil((double) totalCount / pageSize);
     }
 
-    public Article getArticle(int id) {
-        return articleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(id + "번 게시글은 존재하지 않습니다."));
+    // 상세보기용(조회수 증가)
+    public Article getArticleWithIncreaseCount(int id) {
+        Article article = getArticle(id);
+        article.addCount();
+        return article;
     }
 
     public void modify(int id, String title, String content) {
@@ -57,4 +59,10 @@ public class ArticleService {
         getArticle(id);
         articleRepository.delete(id);
     }
+
+    public Article getArticle(int id) {
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(id + "번 게시글은 존재하지 않습니다."));
+    }
+
 }

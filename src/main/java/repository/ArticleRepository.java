@@ -11,7 +11,7 @@ public class ArticleRepository {
     public int save(String title, String content) {
         int id = ++lastId;
         LocalDateTime now = LocalDateTime.now();
-        articleMap.put(id, new Article(id, title, content, now, now));
+        articleMap.put(id, new Article(id, title, content, now, now,0));
         return id;
     }
 

@@ -13,12 +13,17 @@ public class Article {
     private String content;
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+    private int count;
 
 
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
         this.modDate = LocalDateTime.now();
+    }
+
+    public void addCount(){
+        this.count = this.count + 1;
     }
 
 

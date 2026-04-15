@@ -38,19 +38,21 @@ class ArticleServiceTest {
         int id = articleService.write("제목", "내용");
 
         // when
-        Article article = articleService.getArticle(id);
+        Article article = articleService.getArticleWithIncreaseCount(id);
+        article = articleService.getArticleWithIncreaseCount(id);
 
         // then
         assertThat(article).isNotNull();
         assertThat(article.getId()).isEqualTo(id);
         assertThat(article.getTitle()).isEqualTo("제목");
+        assertThat(article.getCount()).isEqualTo(2);
     }
 
     @Test
     @DisplayName("존재하지 않는 게시글 ID로 조회하면 RuntimeException이 발생한다")
     void getArticle_fail_test() {
         // when & then
-        assertThatThrownBy(() -> articleService.getArticle(99))
+        assertThatThrownBy(() -> articleService.getArticleWithIncreaseCount(99))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("99번 게시글은 존재하지 않습니다.");
     }

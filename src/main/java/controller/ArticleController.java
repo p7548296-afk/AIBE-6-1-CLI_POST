@@ -50,11 +50,11 @@ public class ArticleController {
 
     public void showDetail(Rq rq) {
         try {
-            Article article = articleService.getArticle(rq.getIntParam("id", 0));
+            Article article = articleService.getArticleWithIncreaseCount(rq.getIntParam("id", 0));
             String regDate = article.getRegDate().format(DATE_FORMATTER);
             String modDate = article.getModDate().format(DATE_FORMATTER);
-            System.out.printf("번호: %d\n제목: %s\n내용: %s\n등록일: %s\n수정일: %s\n",
-                    article.getId(), article.getTitle(), article.getContent(),regDate,modDate);
+            System.out.printf("번호: %d\n제목: %s\n내용: %s\n조회수: %d\n등록일: %s\n수정일: %s\n",
+                    article.getId(), article.getTitle(), article.getContent(),article.getCount(),regDate,modDate);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
