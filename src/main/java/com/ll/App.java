@@ -103,10 +103,13 @@ public class App {
             return;
         }
 
+        post.increaseCount();
+
         System.out.println("번호: " + post.getId());
         System.out.println("제목: " + post.getTitle());
         System.out.println("내용: " + post.getContent());
         System.out.println("등록일: " + post.getCurrentDate());
+        System.out.println("조회수: " + post.getCount());
     }
 
     // 게시글 삭제 처리

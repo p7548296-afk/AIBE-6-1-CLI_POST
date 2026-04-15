@@ -130,7 +130,21 @@ class AppTest {
                     "번호: 1",
                     "제목: 자바 공부",
                     "내용: 자바 텍스트 게시판 만들기",
-                    "등록일:");
+                    "등록일:",
+                    "조회수: 1");
+        }
+
+        @Test
+        @DisplayName("상세보기를 여러 번 요청하면 조회수가 증가하는지 확인")
+        void increasesViewCountOnEachDetail() {
+            String output = runAppWithInput(
+                    "write", "자바 공부", "자바 텍스트 게시판 만들기",
+                    "detail 1",
+                    "detail 1",
+                    "exit"
+            );
+
+            assertContainsAll(output, "조회수: 1", "조회수: 2");
         }
     }
 

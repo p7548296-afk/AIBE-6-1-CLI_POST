@@ -10,6 +10,7 @@ public class Article {
     private String title;        // 게시글 제목
     private String content;      // 게시글 내용
     private String regDate;      // 게시글 등록일 (yyyy-MM-dd 형식)
+    private int count;           // 게시글 조회수
 
     // Article 생성자
     public Article(int id, String title, String content) {
@@ -18,6 +19,7 @@ public class Article {
         this.content = content;
         // 현재 날짜를 yyyy-MM-dd 형식으로 저장
         this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.count = 0;
     }
 
     public int getId() {
@@ -36,6 +38,10 @@ public class Article {
         return this.regDate;
     }
 
+    public int getCount() {
+        return this.count;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -46,6 +52,10 @@ public class Article {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void increaseCount() {
+        this.count++;
     }
 
 }

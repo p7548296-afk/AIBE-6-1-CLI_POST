@@ -24,6 +24,7 @@ class ArticleTest {
         assertEquals("자바 공부", article.getTitle());
         assertEquals("자바 텍스트 게시판 만들기", article.getContent());
         assertNotNull(article.getCurrentDate());
+        assertEquals(0, article.getCount());
     }
 
     @Test
@@ -48,6 +49,17 @@ class ArticleTest {
 
         assertEquals("수정 제목", article.getTitle());
         assertEquals("수정 내용", article.getContent());
+    }
+
+    @Test
+    @DisplayName("조회수 증가 메서드가 정상 동작하는지 확인")
+    void increasesCount() {
+        Article article = new Article(1, "제목", "내용");
+
+        article.increaseCount();
+        article.increaseCount();
+
+        assertEquals(2, article.getCount());
     }
 }
 
