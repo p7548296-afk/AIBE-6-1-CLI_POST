@@ -215,5 +215,39 @@ class AppTest {
             assertTrue(emptyContentOutput.contains("내용: 원래 내용"));
         }
     }
+
+
+    // -------------------------------------------------------------------------------------
+    // 5. 게시글 삭제 (deleteArticle) 테스트 케이스
+    // -------------------------------------------------------------------------------------
+    @Nested
+    @DisplayName("게시글 삭제(deleteArticle) 테스트")
+    class DeleteArticleTest {
+
+        @Test
+        @DisplayName("존재하지 않는 ID로 삭제 요청 시 예외 상황 메시지가 출력되는지 확인")
+        void showsErrorMessageWhenDeleteIdDoesNotExist() {
+            String output = runAppWithInput("delete 999", "exit");
+
+            assertTrue(output.contains("해당 아이디는 존재하지 않습니다."));
+            assertTrue(!output.contains("=> 게시글이 삭제되었습니다."));
+        }
+
+        @Test
+        @DisplayName("게시글이 삭제된 후 목록에서 해당 게시글이 없는지 확인")
+        void deletedArticleDoesNotAppearInList() {
+            String output = runAppWithInput(
+                    "write", "첫번째 제목", "첫번째 내용",
+                    "write", "두번째 제목", "두번째 내용",
+                    "delete 1",
+                    "list",
+                    "exit"
+            );
+
+            assertTrue(output.contains("=> 게시글이 삭제되었습니다."));
+            assertTrue(output.contains("2    | 두번째 제목"));
+            assertTrue(!output.contains("1    | 첫번째 제목"));
+        }
+    }
 }
 
