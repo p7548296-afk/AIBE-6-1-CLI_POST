@@ -31,7 +31,7 @@ public class App {
                     return;
                 }
                 case "write" -> articleController.doWrite();
-                case "list" -> articleController.showList();
+                case "list" -> articleController.showList(rq);
                 case "detail" -> articleController.showDetail(rq);
                 case "update" -> articleController.doModify(rq);
                 case "delete" -> articleController.doDelete(rq);
