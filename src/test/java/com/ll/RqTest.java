@@ -33,5 +33,13 @@ class RqTest {
         assertEquals(-1, missingIdRq.getParamAsInt("id", -1));
         assertEquals(-1, invalidIdRq.getParamAsInt("id", -1));
     }
+
+    @Test
+    @DisplayName("명령어 뒤 인자를 그대로 가져오는지 확인")
+    void getsArg() {
+        Rq rq = new Rq("search 자바");
+
+        assertEquals("자바", rq.getArg());
+    }
 }
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,6 +61,24 @@ class ArticleTest {
         article.increaseCount();
 
         assertEquals(2, article.getCount());
+    }
+
+    @Test
+    @DisplayName("키워드가 제목에 포함되면 matches()가 true를 반환하는지 확인")
+    void matchesByTitle() {
+        Article article = new Article(1, "자바 공부", "스프링 실습");
+
+        assertTrue(article.matches("자바"));
+        assertFalse(article.matches("파이썬"));
+    }
+
+    @Test
+    @DisplayName("키워드가 내용에 포함되면 matches()가 true를 반환하는지 확인")
+    void matchesByContent() {
+        Article article = new Article(1, "공부 일지", "자바 텍스트 게시판 만들기");
+
+        assertTrue(article.matches("텍스트"));
+        assertFalse(article.matches("Django"));
     }
 }
 
