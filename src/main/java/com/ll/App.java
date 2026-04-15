@@ -110,6 +110,11 @@ public class App {
         System.out.println("번호 | 제목 | 등록일");
         System.out.println("-----------------------------");
 
+        if (postList.isEmpty()) {
+            System.out.println("(게시글 없음)");
+            return;
+        }
+
         for (int i = postList.size() - 1; i >= 0; i--) {
             Article post = postList.get(i);
             System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCurrentDate()));
