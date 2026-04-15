@@ -229,6 +229,32 @@ class AppTest {
         }
     }
 
+    @Nested
+    @DisplayName("게시글 검색(search) 테스트")
+    class SearchArticleTest {
+
+        @Test
+        @DisplayName("검색어가 제목/내용에 포함된 게시글만 출력되는지 확인")
+        void showsOnlyMatchedArticles() {
+            String output = runAppWithInput(
+                    "write", "자바 공부", "컬렉션 학습",
+                    "write", "스프링 공부", "자바 백엔드",
+                    "search 자바",
+                    "exit"
+            );
+
+            assertContainsAll(output, "1    | 자바 공부", "2    | 스프링 공부");
+        }
+
+        @Test
+        @DisplayName("검색 결과가 없으면 안내 문구가 출력되는지 확인")
+        void showsEmptyMessageWhenNoSearchResult() {
+            String output = runWithTwoArticlesThen("search 파이썬");
+
+            assertTrue(output.contains("(검색 결과 없음)"));
+        }
+    }
+
 
 
 }

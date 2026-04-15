@@ -34,6 +34,11 @@ public class App {
                 case "list":
                     listArticles();
                     break;
+                case "search": {
+                    String keyword = rq.getParam("id", "");
+                    searchArticles(keyword);
+                    break;
+                }
                 case "detail": {
                     int id = rq.getParamAsInt("id", -1);
                     showDetail(id);
@@ -91,6 +96,31 @@ public class App {
         for (int i = postList.size() - 1; i >= 0; i--) {
             Article post = postList.get(i);
             System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCurrentDate()));
+        }
+    }
+
+    private void searchArticles(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            System.out.println("검색어를 입력해주세요.");
+            return;
+        }
+
+        System.out.println("번호 | 제목 | 등록일");
+        System.out.println("-----------------------------");
+
+        boolean found = false;
+
+        for (int i = postList.size() - 1; i >= 0; i--) {
+            Article post = postList.get(i);
+
+            if (post.getTitle().contains(keyword) || post.getContent().contains(keyword)) {
+                System.out.println("%d    | %s  | %s".formatted(post.getId(), post.getTitle(), post.getCurrentDate()));
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("(검색 결과 없음)");
         }
     }
 
