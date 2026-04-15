@@ -88,7 +88,15 @@ public class App {
      * @param content 게시글 내용
      * @return 생성된 Article 객체
      */
-    private Article write(String title, String content) {
+    public Article write(String title, String content) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("제목은 비어 있을 수 없습니다.");
+        }
+
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("내용은 비어 있을 수 없습니다.");
+        }
+
         Article post = new Article(++lastId, title, content);
         postList.add(post);
         return post;
@@ -225,3 +233,4 @@ public class App {
     }
 
 }
+

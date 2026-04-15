@@ -11,6 +11,15 @@
             </PendingDiffInfo>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/build.gradle.kts">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/build.gradle.kts" />
+              <option name="originalContent" value="plugins {&#10;    id(&quot;java&quot;)&#10;}&#10;&#10;group = &quot;com.ll&quot;&#10;version = &quot;1.0-SNAPSHOT&quot;&#10;&#10;repositories {&#10;    mavenCentral()&#10;}&#10;&#10;dependencies {&#10;    testImplementation(platform(&quot;org.junit:junit-bom:5.10.0&quot;))&#10;    testImplementation(&quot;org.junit.jupiter:junit-jupiter&quot;)&#10;}&#10;&#10;tasks.test {&#10;    useJUnitPlatform()&#10;}" />
+              <option name="updatedContent" value="plugins {&#10;    id(&quot;java&quot;)&#10;}&#10;&#10;group = &quot;com.ll&quot;&#10;version = &quot;1.0-SNAPSHOT&quot;&#10;&#10;repositories {&#10;    mavenCentral()&#10;}&#10;&#10;dependencies {&#10;    testImplementation(platform(&quot;org.junit:junit-bom:5.10.0&quot;))&#10;    testImplementation(&quot;org.junit.jupiter:junit-jupiter&quot;)&#10;    testRuntimeOnly(&quot;org.junit.platform:junit-platform-launcher&quot;)&#10;}&#10;&#10;tasks.test {&#10;    useJUnitPlatform()&#10;}&#10;&#10;tasks.withType&lt;JavaCompile&gt; {&#10;    options.encoding = &quot;UTF-8&quot;&#10;}&#10;&#10;tasks.withType&lt;Test&gt; {&#10;    systemProperty(&quot;file.encoding&quot;, &quot;UTF-8&quot;)&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/java/com/ll/Rq.java">
           <value>
             <PendingDiffInfo>
