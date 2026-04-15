@@ -29,21 +29,31 @@ public class ArticleController {
         System.out.printf("%d번 게시글이 등록되었습니다.\n", id);
     }
 
-    public void showList() {
-        List<Article> articles = articleService.getArticles();
+    public void showList(Rq rq) {
+        int page = rq.getIntParam("page", 1);
+        int pageSize = rq.getIntParam("pagesize", 5);
+
+        List<Article> articles = articleService.getArticles(page, pageSize);
+        int totalPage = articleService.getTotalPage(pageSize);
+
         if (articles.isEmpty()) {
-            System.out.println("게시글이 존재하지 않습니다.");
+            System.out.println("해당 페이지에 게시글이 없습니다.");
             return;
         }
+
+        System.out.printf("--- %d 페이지 목록 ---\n", page);
         System.out.println("번호 | 제목 | 등록일");
         articles.forEach(a ->
                 System.out.printf("%d | %s | %s\n",
                         a.getId(), a.getTitle(), a.getRegDate().format(DATE_FORMATTER)));
+
+        System.out.printf("--- 현재 페이지: %d / %d ---\n", page, totalPage);
+
     }
 
     public void showDetail(Rq rq) {
         try {
-            Article article = articleService.getArticle(rq.getId());
+            Article article = articleService.getArticle(rq.getIntParam("id", 0));
             String regDate = article.getRegDate().format(DATE_FORMATTER);
             String modDate = article.getModDate().format(DATE_FORMATTER);
             System.out.printf("번호: %d\n제목: %s\n내용: %s\n등록일: %s\n수정일: %s\n",
@@ -55,14 +65,15 @@ public class ArticleController {
 
     public void doModify(Rq rq) {
         try {
-            Article article = articleService.getArticle(rq.getId());
+            int id = rq.getIntParam("id", 0);
+            Article article = articleService.getArticle(id);
             System.out.printf("제목(기존: %s): ", article.getTitle());
             String title = sc.nextLine();
             System.out.printf("내용(기존: %s): ", article.getContent());
             String content = sc.nextLine();
 
-            articleService.modify(rq.getId(), title, content);
-            System.out.printf("%d번 게시글이 수정되었습니다.\n", rq.getId());
+            articleService.modify(id, title, content);
+            System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
@@ -70,8 +81,9 @@ public class ArticleController {
 
     public void doDelete(Rq rq) {
         try {
-            articleService.remove(rq.getId());
-            System.out.printf("%d번 게시글이 삭제되었습니다.\n", rq.getId());
+            int id = rq.getIntParam("id", 0);
+            articleService.remove(id);
+            System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
@@ -80,10 +92,10 @@ public class ArticleController {
     public void showHelp() {
         System.out.println("\n=== 명령어 도움말 ===");
         System.out.println("등록 : write");
-        System.out.println("목록 : list");
-        System.out.println("상세 : detail {id}");
-        System.out.println("수정 : update {id}");
-        System.out.println("삭제 : delete {id}");
+        System.out.println("목록 : list?page=1&pagesize=5");
+        System.out.println("상세 : detail?id=1");
+        System.out.println("수정 : update?id=1");
+        System.out.println("삭제 : delete?id=1");
         System.out.println("도움 : help");
         System.out.println("종료 : exit");
         System.out.println("====================\n");
